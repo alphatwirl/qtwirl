@@ -29,7 +29,7 @@ def qtwirl(file, reader_cfg,
     """
 
     Dataset = collections.namedtuple('Dataset', 'name files')
-    datasets = [Dataset(name='dataset', files=file)]
+    dataset = Dataset(name='dataset', files=file)
 
     pairs = create_paris_from_tblcfg([reader_cfg['summarizer']], '')
     reader_top = alphatwirl.loop.ReaderComposite()
@@ -63,19 +63,10 @@ def qtwirl(file, reader_cfg,
     dataset_readers = alphatwirl.datasetloop.DatasetReaderComposite()
     dataset_readers.add(eventReader)
 
-    if parallel_mode in ('subprocess', 'htcondor'):
-        loop = alphatwirl.datasetloop.ResumableDatasetLoop(
-            datasets=datasets, reader=dataset_readers,
-            workingarea=parallel.workingarea
-        )
-    else:
-        loop = alphatwirl.datasetloop.DatasetLoop(
-            datasets=datasets,
-            reader=dataset_readers
-        )
-
     parallel.begin()
-    ret = loop()
+    eventReader.begin()
+    eventReader.read(dataset)
+    ret = eventReader.end()
     parallel.end()
 
     return ret
