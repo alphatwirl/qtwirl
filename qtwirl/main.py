@@ -47,7 +47,7 @@ def qtwirl(file, reader_cfg,
     eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
     eventBuilderConfigMaker = EventBuilderConfigMaker(treeName=tree_name)
     datasetIntoEventBuildersSplitter = alphatwirl.loop.DatasetIntoEventBuildersSplitter(
-        EventBuilder=alphatwirl.roottree.BEventBuilder,
+        EventBuilder=alphatwirl.roottree.BuildEvents,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
         maxEvents=max_events,
         maxEventsPerRun=max_events_per_process,
@@ -117,23 +117,23 @@ def build_counter_collector_pair(tblcfg):
     return reader, collector
 
 ##__________________________________________________________________||
-EventBuilderConfig = collections.namedtuple(
-    'EventBuilderConfig',
-    'inputPaths treeName maxEvents start name'
-)
-
-##__________________________________________________________________||
 class EventBuilderConfigMaker(object):
-    def __init__(self, treeName):
+    def __init__(self, treeName,
+                 check_files=True, skip_error_files=True):
         self.treeName = treeName
+        self.check_files = check_files
+        self.skip_error_files = skip_error_files
 
     def create_config_for(self, dataset, files, start, length):
-        config = EventBuilderConfig(
-            inputPaths=files,
-            treeName=self.treeName,
-            maxEvents=length,
+        config = dict(
+            events_class=alphatwirl.roottree.BEvents,
+            file_paths=files,
+            tree_name=self.treeName,
+            max_events=length,
             start=start,
-            name=dataset.name # for the progress report writer
+            check_files=self.check_files,
+            skip_error_files=self.skip_error_files,
+            name=dataset.name, # for the progress report writer
         )
         return config
 
