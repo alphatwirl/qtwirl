@@ -8,6 +8,9 @@ import alphatwirl
 from alphatwirl.roottree.inspect import is_ROOT_null_pointer
 
 ##__________________________________________________________________||
+__all__ = ['qtwirl']
+
+##__________________________________________________________________||
 def qtwirl(file, reader_cfg,
            parallel_mode='multiprocessing',
            dispatcher_options=dict(),
