@@ -12,6 +12,7 @@ __all__ = ['qtwirl']
 
 ##__________________________________________________________________||
 def qtwirl(file, reader_cfg,
+           tree_name=None,
            parallel_mode='multiprocessing',
            dispatcher_options=dict(),
            process=4, user_modules=(),
@@ -44,7 +45,7 @@ def qtwirl(file, reader_cfg,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
     eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
-    eventBuilderConfigMaker = EventBuilderConfigMaker()
+    eventBuilderConfigMaker = EventBuilderConfigMaker(treeName=tree_name)
     datasetIntoEventBuildersSplitter = alphatwirl.loop.DatasetIntoEventBuildersSplitter(
         EventBuilder=alphatwirl.roottree.BEventBuilder,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
@@ -123,7 +124,7 @@ EventBuilderConfig = collections.namedtuple(
 
 ##__________________________________________________________________||
 class EventBuilderConfigMaker(object):
-    def __init__(self, treeName='Events'):
+    def __init__(self, treeName):
         self.treeName = treeName
 
     def create_config_for(self, dataset, files, start, length):
