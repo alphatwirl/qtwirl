@@ -148,10 +148,11 @@ class EventBuilderConfigMaker(object):
         )
         return config
 
-    def file_list_in(self, dataset, max_files):
-        if max_files < 0:
-            return dataset.files
-        return dataset.files[:min(max_files, len(dataset.files))]
+##__________________________________________________________________||
+def get_files_in_dataset(dataset, max_files):
+    if max_files < 0:
+        return dataset.files
+    return dataset.files[:min(max_files, len(dataset.files))]
 
 ##__________________________________________________________________||
 class DatasetIntoEventBuildersSplitter(object):
@@ -170,7 +171,7 @@ class DatasetIntoEventBuildersSplitter(object):
         self.max_files = max_files
         self.max_files_per_run = max_files_per_run
 
-        self.func_get_files_in_dataset = self.eventBuilderConfigMaker.file_list_in
+        self.func_get_files_in_dataset = get_files_in_dataset
 
     def __repr__(self):
         return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, max_events={!r}, max_events_per_run={!r}, max_files={!r}, max_files_per_run={!r})'.format(
