@@ -48,7 +48,9 @@ def qtwirl(file, reader_cfg,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
     eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
-    eventBuilderConfigMaker = EventBuilderConfigMaker(treeName=tree_name)
+    eventBuilderConfigMaker = EventBuilderConfigMaker(
+        EventBuilder=alphatwirl.roottree.BuildEvents,
+        treeName=tree_name)
     datasetIntoEventBuildersSplitter = DatasetIntoEventBuildersSplitter(
         EventBuilder=alphatwirl.roottree.BuildEvents,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
@@ -123,15 +125,21 @@ def build_counter_collector_pair(tblcfg):
 
 ##__________________________________________________________________||
 class EventBuilderConfigMaker(object):
-    def __init__(self, treeName,
+    def __init__(self, EventBuilder, treeName,
                  check_files=True, skip_error_files=True):
+        self.EventBuilder = EventBuilder
         self.treeName = treeName
         self.check_files = check_files
         self.skip_error_files = skip_error_files
 
-    def create_configs(self, dataset, file_start_length_list):
+    def create_eventbuilders(self, dataset, files_start_length_list):
+        configs = self.create_configs(dataset, files_start_length_list)
+        eventBuilders = [self.EventBuilder(c) for c in configs]
+        return eventBuilders
+
+    def create_configs(self, dataset, files_start_length_list):
         configs = [ ]
-        for files, start, length in file_start_length_list:
+        for files, start, length in files_start_length_list:
             config = self.create_config_for(dataset, files, start, length)
             configs.append(config)
         return configs
@@ -209,8 +217,6 @@ class DatasetIntoEventBuildersSplitter(object):
         #     (['C.root'], 20, 10)
         # ]
 
-        configs = self.eventBuilderConfigMaker.create_configs(dataset, files_start_length_list)
-        eventBuilders = [self.EventBuilder(c) for c in configs]
-        return eventBuilders
+        return self.eventBuilderConfigMaker.create_eventbuilders(dataset, files_start_length_list)
 
 ##__________________________________________________________________||
