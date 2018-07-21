@@ -1,11 +1,12 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import os
 import collections
+import logging
 
 import ROOT
 
 import alphatwirl
-from alphatwirl.roottree.inspect import is_ROOT_null_pointer
+from alphatwirl.roottree.inspect import get_entries_in_tree_in_file
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']
@@ -151,15 +152,5 @@ class EventBuilderConfigMaker(object):
                 logger.error(msg)
                 raise RuntimeError(msg)
         return ret
-
-##__________________________________________________________________||
-def get_entries_in_tree_in_file(path, tree_name):
-    file_ = ROOT.TFile.Open(path)
-    if is_ROOT_null_pointer(file_) or file_.IsZombie():
-        logger = logging.getLogger(__name__)
-        logger.warning('cannot open {}'.format(path))
-        return None
-    tree = file_.Get(tree_name)
-    return tree.GetEntriesFast()
 
 ##__________________________________________________________________||
