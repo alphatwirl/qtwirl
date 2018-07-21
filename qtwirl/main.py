@@ -52,7 +52,6 @@ def qtwirl(file, reader_cfg,
         EventBuilder=alphatwirl.roottree.BuildEvents,
         treeName=tree_name)
     datasetIntoEventBuildersSplitter = DatasetIntoEventBuildersSplitter(
-        EventBuilder=alphatwirl.roottree.BuildEvents,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
         func_get_files_in_dataset = functools.partial(get_files_in_dataset, max_files=max_files),
         func_get_nevents_in_file=functools.partial(get_entries_in_tree_in_file, tree_name=tree_name),
@@ -166,14 +165,13 @@ def get_files_in_dataset(dataset, max_files=-1):
 ##__________________________________________________________________||
 class DatasetIntoEventBuildersSplitter(object):
 
-    def __init__(self, EventBuilder, eventBuilderConfigMaker,
+    def __init__(self, eventBuilderConfigMaker,
                  func_get_files_in_dataset,
                  func_get_nevents_in_file,
                  max_events=-1, max_events_per_run=-1,
                  max_files=-1, max_files_per_run=1
     ):
 
-        self.EventBuilder = EventBuilder
         self.eventBuilderConfigMaker = eventBuilderConfigMaker
         self.func_get_files_in_dataset = func_get_files_in_dataset
         self.func_get_nevents_in_file = func_get_nevents_in_file
@@ -181,18 +179,6 @@ class DatasetIntoEventBuildersSplitter(object):
         self.max_events_per_run = max_events_per_run
         self.max_files = max_files
         self.max_files_per_run = max_files_per_run
-
-
-    def __repr__(self):
-        return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, max_events={!r}, max_events_per_run={!r}, max_files={!r}, max_files_per_run={!r})'.format(
-            self.__class__.__name__,
-            self.EventBuilder,
-            self.eventBuilderConfigMaker,
-            self.max_events,
-            self.max_events_per_run,
-            self.max_files,
-            self.max_files_per_run
-        )
 
     def __call__(self, dataset):
 
@@ -207,15 +193,6 @@ class DatasetIntoEventBuildersSplitter(object):
             max_files=self.max_files,
             max_files_per_run=self.max_files_per_run
         )
-        # (files, start, length)
-        # e.g.,
-        # [
-        #     (['A.root'], 0, 80),
-        #     (['A.root', 'B.root'], 80, 80),
-        #     (['B.root'], 60, 80),
-        #     (['B.root', 'C.root'], 140, 80),
-        #     (['C.root'], 20, 10)
-        # ]
 
         return self.eventBuilderConfigMaker.create_eventbuilders(dataset, files_start_length_list)
 
