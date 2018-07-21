@@ -143,15 +143,23 @@ class EventBuilderConfigMaker(object):
         return dataset.files[:min(maxFiles, len(dataset.files))]
 
     def nevents_in_file(self, path):
-        file_ = ROOT.TFile.Open(path)
-        if is_ROOT_null_pointer(file_) or file_.IsZombie():
-            logger = logging.getLogger(__name__)
-            if self.skip_error_files:
-                logger.warning('cannot open {}'.format(path))
-                return 0
-            logger.error('cannot open {}'.format(path))
-            raise OSError('cannot open {}'.format(path))
-        tree = file_.Get(self.treeName)
-        return tree.GetEntriesFast()
+        ret = get_entries_in_tree_in_file(path, tree_name=self.treeName)
+        if not self.skip_error_files:
+            if ret is None:
+                logger = logging.getLogger(__name__)
+                msg = 'cannot get the number of events in {}'.format(path)
+                logger.error(msg)
+                raise RuntimeError(msg)
+        return ret
+
+##__________________________________________________________________||
+def get_entries_in_tree_in_file(path, tree_name):
+    file_ = ROOT.TFile.Open(path)
+    if is_ROOT_null_pointer(file_) or file_.IsZombie():
+        logger = logging.getLogger(__name__)
+        logger.warning('cannot open {}'.format(path))
+        return None
+    tree = file_.Get(tree_name)
+    return tree.GetEntriesFast()
 
 ##__________________________________________________________________||
