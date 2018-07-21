@@ -51,10 +51,10 @@ def qtwirl(file, reader_cfg,
     datasetIntoEventBuildersSplitter = DatasetIntoEventBuildersSplitter(
         EventBuilder=alphatwirl.roottree.BuildEvents,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
-        maxEvents=max_events,
-        maxEventsPerRun=max_events_per_process,
-        maxFiles=max_files,
-        maxFilesPerRun=max_files_per_process
+        max_events=max_events,
+        max_events_per_run=max_events_per_process,
+        max_files=max_files,
+        max_files_per_run=max_files_per_process
     )
     eventReader = alphatwirl.loop.EventDatasetReader(
         eventLoopRunner=eventLoopRunner,
@@ -139,10 +139,10 @@ class EventBuilderConfigMaker(object):
         )
         return config
 
-    def file_list_in(self, dataset, maxFiles):
-        if maxFiles < 0:
+    def file_list_in(self, dataset, max_files):
+        if max_files < 0:
             return dataset.files
-        return dataset.files[:min(maxFiles, len(dataset.files))]
+        return dataset.files[:min(max_files, len(dataset.files))]
 
     def nevents_in_file(self, path):
         ret = get_entries_in_tree_in_file(path, tree_name=self.treeName)
@@ -158,19 +158,19 @@ class EventBuilderConfigMaker(object):
 class DatasetIntoEventBuildersSplitter(object):
 
     def __init__(self, EventBuilder, eventBuilderConfigMaker,
-                 maxEvents=-1, maxEventsPerRun=-1,
-                 maxFiles=-1, maxFilesPerRun=1
+                 max_events=-1, max_events_per_run=-1,
+                 max_files=-1, max_files_per_run=1
     ):
 
         self.EventBuilder = EventBuilder
         self.eventBuilderConfigMaker = eventBuilderConfigMaker
-        self.max_events = maxEvents
-        self.max_events_per_run = maxEventsPerRun
-        self.max_files = maxFiles
-        self.max_files_per_run = maxFilesPerRun
+        self.max_events = max_events
+        self.max_events_per_run = max_events_per_run
+        self.max_files = max_files
+        self.max_files_per_run = max_files_per_run
 
     def __repr__(self):
-        return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, maxEvents={!r}, maxEventsPerRun={!r}, maxFiles={!r}, maxFilesPerRun={!r})'.format(
+        return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, max_events={!r}, max_events_per_run={!r}, max_files={!r}, max_files_per_run={!r})'.format(
             self.__class__.__name__,
             self.EventBuilder,
             self.eventBuilderConfigMaker,
