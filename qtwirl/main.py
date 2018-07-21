@@ -169,6 +169,9 @@ class DatasetIntoEventBuildersSplitter(object):
         self.max_files = max_files
         self.max_files_per_run = max_files_per_run
 
+        self.func_get_files_in_dataset = self.eventBuilderConfigMaker.file_list_in
+        self.func_get_nevents_in_file = self.eventBuilderConfigMaker.nevents_in_file
+
     def __repr__(self):
         return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, max_events={!r}, max_events_per_run={!r}, max_files={!r}, max_files_per_run={!r})'.format(
             self.__class__.__name__,
@@ -182,12 +185,12 @@ class DatasetIntoEventBuildersSplitter(object):
 
     def __call__(self, dataset):
 
-        files = self.eventBuilderConfigMaker.file_list_in(dataset, maxFiles=self.max_files)
+        files = self.func_get_files_in_dataset(dataset, max_files=self.max_files)
         # e.g., ['A.root', 'B.root', 'C.root', 'D.root', 'E.root']
 
         files_start_length_list = create_files_start_length_list(
             files,
-            func_get_nevents_in_file=self.eventBuilderConfigMaker.nevents_in_file,
+            func_get_nevents_in_file=self.func_get_nevents_in_file,
             max_events=self.max_events,
             max_events_per_run=self.max_events_per_run,
             max_files=self.max_files,
