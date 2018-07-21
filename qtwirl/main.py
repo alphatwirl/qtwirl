@@ -126,6 +126,13 @@ class EventBuilderConfigMaker(object):
         self.check_files = check_files
         self.skip_error_files = skip_error_files
 
+    def create_configs(self, dataset, file_start_length_list):
+        configs = [ ]
+        for files, start, length in file_start_length_list:
+            config = self.create_config_for(dataset, files, start, length)
+            configs.append(config)
+        return configs
+
     def create_config_for(self, dataset, files, start, length):
         config = dict(
             events_class=alphatwirl.roottree.BEvents,
@@ -206,15 +213,8 @@ class DatasetIntoEventBuildersSplitter(object):
         #     (['C.root'], 20, 10)
         # ]
 
-        configs = self._create_configs(dataset, files_start_length_list)
+        configs = self.eventBuilderConfigMaker.create_configs(dataset, files_start_length_list)
         eventBuilders = [self.EventBuilder(c) for c in configs]
         return eventBuilders
-
-    def _create_configs(self, dataset, file_start_length_list):
-        configs = [ ]
-        for files, start, length in file_start_length_list:
-            config = self.eventBuilderConfigMaker.create_config_for(dataset, files, start, length)
-            configs.append(config)
-        return configs
 
 ##__________________________________________________________________||
