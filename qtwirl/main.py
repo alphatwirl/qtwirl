@@ -1,6 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import os
 import collections
+import functools
 import logging
 
 import ROOT
@@ -51,6 +52,7 @@ def qtwirl(file, reader_cfg,
     datasetIntoEventBuildersSplitter = DatasetIntoEventBuildersSplitter(
         EventBuilder=alphatwirl.roottree.BuildEvents,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
+        func_get_nevents_in_file=functools.partial(get_entries_in_tree_in_file, tree_name=tree_name),
         max_events=max_events,
         max_events_per_run=max_events_per_process,
         max_files=max_files,
@@ -151,33 +153,24 @@ class EventBuilderConfigMaker(object):
             return dataset.files
         return dataset.files[:min(max_files, len(dataset.files))]
 
-    def nevents_in_file(self, path):
-        ret = get_entries_in_tree_in_file(path, tree_name=self.treeName)
-        if not self.skip_error_files:
-            if ret is None:
-                logger = logging.getLogger(__name__)
-                msg = 'cannot get the number of events in {}'.format(path)
-                logger.error(msg)
-                raise RuntimeError(msg)
-        return ret
-
 ##__________________________________________________________________||
 class DatasetIntoEventBuildersSplitter(object):
 
     def __init__(self, EventBuilder, eventBuilderConfigMaker,
+                 func_get_nevents_in_file,
                  max_events=-1, max_events_per_run=-1,
                  max_files=-1, max_files_per_run=1
     ):
 
         self.EventBuilder = EventBuilder
         self.eventBuilderConfigMaker = eventBuilderConfigMaker
+        self.func_get_nevents_in_file = func_get_nevents_in_file
         self.max_events = max_events
         self.max_events_per_run = max_events_per_run
         self.max_files = max_files
         self.max_files_per_run = max_files_per_run
 
         self.func_get_files_in_dataset = self.eventBuilderConfigMaker.file_list_in
-        self.func_get_nevents_in_file = self.eventBuilderConfigMaker.nevents_in_file
 
     def __repr__(self):
         return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, max_events={!r}, max_events_per_run={!r}, max_files={!r}, max_files_per_run={!r})'.format(
