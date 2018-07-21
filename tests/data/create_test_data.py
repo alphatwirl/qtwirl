@@ -13,9 +13,9 @@ def main():
 
     create_file('sample_chain_01.root', nevents=1000)
     create_file('sample_chain_02.root', nevents=1000)
-    create_file('sample_chain_03.root', nevents=1000)
+    create_file('sample_chain_03_zombie.root', nevents=1000)
     create_file('sample_chain_04.root', nevents=1000)
-    make_zombie('sample_chain_03.root')
+    make_zombie('sample_chain_03_zombie.root')
 
 def create_file(name, nevents):
 
