@@ -17,6 +17,9 @@ import alphatwirl
 from qtwirl import qtwirl
 
 ##__________________________________________________________________||
+pytestmark = pytest.mark.filterwarnings('ignore::RuntimeWarning')
+
+##__________________________________________________________________||
 def test_with_sample():
 
     ##
@@ -24,7 +27,7 @@ def test_with_sample():
     sample_basenames = [
         'sample_chain_01.root',
         'sample_chain_02.root',
-        # 'sample_chain_03.root',
+        'sample_chain_03_zombie.root',
         'sample_chain_04.root',
     ]
     sample_paths = [os.path.join(sample_dir, b) for b in sample_basenames]
@@ -44,9 +47,15 @@ def test_with_sample():
             keyOutColumnNames=('jet_pt', )
         ))
 
-    results = qtwirl(file=sample_paths, reader_cfg=reader_cfg, tree_name='tree')
+    results = qtwirl(
+        file=sample_paths,
+        reader_cfg=reader_cfg,
+        tree_name='tree',
+        process=0,
+        quiet=True
+    )
 
     ##
-    assert_frame_equal(tbl, results[0],check_names=True)
+    assert_frame_equal(tbl, results[0], check_names=True)
 
 ##__________________________________________________________________||
