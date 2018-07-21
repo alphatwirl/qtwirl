@@ -150,7 +150,7 @@ class EventBuilderConfigMaker(object):
         return config
 
 ##__________________________________________________________________||
-def get_files_in_dataset(dataset, max_files):
+def get_files_in_dataset(dataset, max_files=-1):
     if max_files < 0:
         return dataset.files
     return dataset.files[:min(max_files, len(dataset.files))]
