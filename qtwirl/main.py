@@ -52,6 +52,7 @@ def qtwirl(file, reader_cfg,
     datasetIntoEventBuildersSplitter = DatasetIntoEventBuildersSplitter(
         EventBuilder=alphatwirl.roottree.BuildEvents,
         eventBuilderConfigMaker=eventBuilderConfigMaker,
+        func_get_files_in_dataset = get_files_in_dataset,
         func_get_nevents_in_file=functools.partial(get_entries_in_tree_in_file, tree_name=tree_name),
         max_events=max_events,
         max_events_per_run=max_events_per_process,
@@ -158,6 +159,7 @@ def get_files_in_dataset(dataset, max_files):
 class DatasetIntoEventBuildersSplitter(object):
 
     def __init__(self, EventBuilder, eventBuilderConfigMaker,
+                 func_get_files_in_dataset,
                  func_get_nevents_in_file,
                  max_events=-1, max_events_per_run=-1,
                  max_files=-1, max_files_per_run=1
@@ -165,13 +167,13 @@ class DatasetIntoEventBuildersSplitter(object):
 
         self.EventBuilder = EventBuilder
         self.eventBuilderConfigMaker = eventBuilderConfigMaker
+        self.func_get_files_in_dataset = func_get_files_in_dataset
         self.func_get_nevents_in_file = func_get_nevents_in_file
         self.max_events = max_events
         self.max_events_per_run = max_events_per_run
         self.max_files = max_files
         self.max_files_per_run = max_files_per_run
 
-        self.func_get_files_in_dataset = get_files_in_dataset
 
     def __repr__(self):
         return '{}(EventBuilder={!r}, eventBuilderConfigMaker={!r}, max_events={!r}, max_events_per_run={!r}, max_files={!r}, max_files_per_run={!r})'.format(
