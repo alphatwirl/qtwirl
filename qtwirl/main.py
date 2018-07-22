@@ -71,9 +71,7 @@ def qtwirl(file, reader_cfg,
     )
 
     parallel.begin()
-    eventReader.begin()
-    eventReader.read(dataset)
-    ret = eventReader.end()
+    ret = eventReader.read(dataset)
     parallel.end()
 
     return ret
@@ -214,8 +212,6 @@ class EventReader(object):
         self.EventLoop = alphatwirl.loop.EventLoop
 
         self.runids = [ ]
-        self.runid_dataset_map = { }
-        self.dataset_runid_reader_map = collections.OrderedDict()
 
         name_value_pairs = (
             ('eventLoopRunner', self.eventLoopRunner),
@@ -231,14 +227,9 @@ class EventReader(object):
     def __repr__(self):
         return self._repr
 
-    def begin(self):
+    def read(self, dataset):
         self.eventLoopRunner.begin()
 
-        self.runids = [ ]
-        self.runid_dataset_map = { }
-        self.dataset_runid_reader_map = collections.OrderedDict()
-
-    def read(self, dataset):
         build_events_list = self.split_into_build_events(dataset)
         eventLoops = [ ]
         for build_events in build_events_list:
@@ -246,39 +237,20 @@ class EventReader(object):
             eventLoop = self.EventLoop(build_events, reader, dataset.name)
             eventLoops.append(eventLoop)
         runids = self.eventLoopRunner.run_multiple(eventLoops)
-
-        self.runids.extend(runids)
         # e.g., [0, 1, 2]
 
-        self.runid_dataset_map.update({i: dataset.name for i in runids})
-        # e.g., {0: 'dataset1', 1: 'dataset1', 2: 'dataset1', 3: 'dataset3'}
+        runid_reader_map = collections.OrderedDict([(i, None) for i in runids])
+        # e.g., OrderedDict([(0, None), (1, None), (2, None)])
 
-        self.dataset_runid_reader_map[dataset.name] = collections.OrderedDict([(i, None) for i in runids])
-        # e.g.,
-        # OrderedDict(
-        #     [
-        #         ('dataset1', OrderedDict([(0, None), (1, None), (2, None)])),
-        #         ('dataset2', OrderedDict()),
-        #         ('dataset3', OrderedDict([(3, None)]))
-        #     ])
-
-    def end(self):
-
-        runids_towait = self.runids[:]
+        runids_towait = runids[:]
         while runids_towait:
             runid, reader = self.eventLoopRunner.receive_one()
-            self._merge(runid, reader)
+            merge_in_order(runid_reader_map, runid, reader)
             runids_towait.remove(runid)
 
-        dataset_readers_list = [(d, list(rr.values())) for d, rr in self.dataset_runid_reader_map.items()]
-        # e.g.,
-        # [('dataset1', reader), ('dataset2', []), ('dataset3', reader)]
+        dataset_readers_list = [(dataset.name, list(runid_reader_map.values()))]
+        # e.g., [('dataset', [reader])]
 
         return self.collector.collect(dataset_readers_list)
-
-    def _merge(self, runid, reader):
-        dataset = self.runid_dataset_map[runid]
-        runid_reader_map = self.dataset_runid_reader_map[dataset]
-        merge_in_order(runid_reader_map, runid, reader)
 
 ##__________________________________________________________________||
