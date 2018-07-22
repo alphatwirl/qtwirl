@@ -5,9 +5,13 @@ language: python
 matrix:
     include:
         - python: 2.7
-          env: ROOT=6.04 PANDAS=0.22
+          env: ROOT=6.04 PANDAS=0.22 ALPHATWIRL=master
+        - python: 2.7
+          env: ROOT=6.04 PANDAS=0.22 ALPHATWIRL=v0.16.0
         - python: 3.6
-          env: ROOT=6.05 PANDAS=0.22
+          env: ROOT=6.05 PANDAS=0.22 ALPHATWIRL=master
+        - python: 3.6
+          env: ROOT=6.05 PANDAS=0.22 ALPHATWIRL=v0.16.0
     allow_failures:
         # - python: 3.6
 
@@ -26,7 +30,7 @@ install:
   - conda create -q -n testenv python=${TRAVIS_PYTHON_VERSION} $([ "$ROOT" != "None" ] && echo "root=${ROOT}") $([ "$PANDAS" != "None" ] && echo "pandas=${PANDAS}") sphinx numpy
   - export CONDA_ENV_PATH=$HOME/miniconda/envs/testenv
   - source activate testenv
-  - pip install git+git://github.com/alphatwirl/alphatwirl.git
+  - pip install git+git://github.com/alphatwirl/alphatwirl.git@"$ALPHATWIRL"
   - pip install pytest
   - pip install codecov
   - pip install pytest-cov
