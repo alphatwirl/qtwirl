@@ -63,7 +63,7 @@ def qtwirl(file, reader_cfg,
         max_files=max_files,
         max_files_per_run=max_files_per_process
     )
-    eventReader = EventDatasetReader(
+    eventReader = EventReader(
         eventLoopRunner=eventLoopRunner,
         reader=reader_top,
         collector=collector_top,
@@ -202,7 +202,7 @@ class DatasetIntoEventBuildersSplitter(object):
         return self.func_create_eventbuilders(files_start_length_list)
 
 ##__________________________________________________________________||
-class EventDatasetReader(object):
+class EventReader(object):
     def __init__(self, eventLoopRunner, reader, collector,
                  split_into_build_events):
 
