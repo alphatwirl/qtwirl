@@ -174,26 +174,32 @@ class DatasetIntoEventBuildersSplitter(object):
                  max_files=-1, max_files_per_run=1):
 
         self.func_get_files_in_dataset = func_get_files_in_dataset
-        self.func_get_nevents_in_file = func_get_nevents_in_file
         self.func_create_eventbuilders = func_create_eventbuilders
-        self.max_events = max_events
-        self.max_events_per_run = max_events_per_run
-        self.max_files = max_files
-        self.max_files_per_run = max_files_per_run
+
+        self.split = functools.partial(
+            create_files_start_length_list,
+            func_get_nevents_in_file=func_get_nevents_in_file,
+            max_events=max_events,
+            max_events_per_run=max_events_per_run,
+            max_files=max_files,
+            max_files_per_run=max_files_per_run
+        )
 
     def __call__(self, dataset):
 
         files = self.func_get_files_in_dataset(dataset)
         # e.g., ['A.root', 'B.root', 'C.root', 'D.root', 'E.root']
 
-        files_start_length_list = create_files_start_length_list(
-            files,
-            func_get_nevents_in_file=self.func_get_nevents_in_file,
-            max_events=self.max_events,
-            max_events_per_run=self.max_events_per_run,
-            max_files=self.max_files,
-            max_files_per_run=self.max_files_per_run
-        )
+        files_start_length_list = self.split(files)
+        # (files, start, length)
+        # e.g.,
+        # [
+        #     (['A.root'], 0, 80),
+        #     (['A.root', 'B.root'], 80, 80),
+        #     (['B.root'], 60, 80),
+        #     (['B.root', 'C.root'], 140, 80),
+        #     (['C.root'], 20, 10)
+        # ]
 
         return self.func_create_eventbuilders(dataset, files_start_length_list)
 
