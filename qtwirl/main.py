@@ -68,9 +68,6 @@ def qtwirl(file, reader_cfg,
         split_into_build_events=datasetIntoEventBuildersSplitter
     )
 
-    dataset_readers = alphatwirl.datasetloop.DatasetReaderComposite()
-    dataset_readers.add(eventReader)
-
     parallel.begin()
     eventReader.begin()
     eventReader.read(dataset)
