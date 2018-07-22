@@ -18,7 +18,8 @@ def qtwirl(file, reader_cfg,
            tree_name=None,
            parallel_mode='multiprocessing',
            dispatcher_options=dict(),
-           process=4, user_modules=(),
+           process=4, quiet=False,
+           user_modules=(),
            max_events=-1, max_files=-1,
            max_events_per_process=-1, max_files_per_process=1):
     """qtwirl (quick-twirl), a one-function interface to alphatwirl
@@ -43,7 +44,7 @@ def qtwirl(file, reader_cfg,
         collector_top.add(c)
 
     parallel = alphatwirl.parallel.build_parallel(
-        parallel_mode=parallel_mode, quiet=False,
+        parallel_mode=parallel_mode, quiet=quiet,
         processes=process,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
