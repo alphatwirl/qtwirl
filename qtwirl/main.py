@@ -48,23 +48,17 @@ def qtwirl(file, reader_cfg,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
     eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
-    create_eventbuilders = EventBuilderMaker(
-        EventBuilder=alphatwirl.roottree.BuildEvents,
-        treeName=tree_name)
-    datasetIntoEventBuildersSplitter = DatasetIntoEventBuildersSplitter(
-        func_get_files_in_dataset = functools.partial(get_files_in_dataset, max_files=max_files),
-        func_get_nevents_in_file=functools.partial(get_entries_in_tree_in_file, tree_name=tree_name),
-        func_create_eventbuilders = create_eventbuilders,
-        max_events=max_events,
-        max_events_per_run=max_events_per_process,
-        max_files=max_files,
-        max_files_per_run=max_files_per_process
-    )
+    func_create_fileloaders = functools.partial(
+        create_fileloaders,
+        tree_name=tree_name,
+        max_events=max_events, max_events_per_run=max_events_per_process,
+        max_files=max_files, max_files_per_run=max_files_per_process,
+        check_files=True, skip_error_files=True)
     eventReader = EventReader(
         eventLoopRunner=eventLoopRunner,
         reader=reader_top,
         collector=collector_top,
-        split_into_build_events=datasetIntoEventBuildersSplitter
+        split_into_build_events=func_create_fileloaders,
     )
 
     parallel.begin()
@@ -118,71 +112,24 @@ def build_counter_collector_pair(tblcfg):
     return reader, collector
 
 ##__________________________________________________________________||
-class EventBuilderMaker(object):
-    def __init__(self, EventBuilder, treeName,
-                 check_files=True, skip_error_files=True):
-        self.EventBuilder = EventBuilder
-        self.treeName = treeName
-        self.check_files = check_files
-        self.skip_error_files = skip_error_files
+def create_fileloaders(
+        files, tree_name,
+        max_events=-1, max_events_per_run=-1,
+        max_files=-1, max_files_per_run=1,
+        check_files=True, skip_error_files=False):
 
-    def __call__(self, files_start_length_list):
-        configs = self.create_configs(files_start_length_list)
-        eventBuilders = [self.EventBuilder(c) for c in configs]
-        return eventBuilders
+        func_get_nevents_in_file = functools.partial(
+            get_entries_in_tree_in_file, tree_name=tree_name)
 
-    def create_configs(self, files_start_length_list):
-        configs = [ ]
-        for files, start, length in files_start_length_list:
-            config = self.create_config_for(files, start, length)
-            configs.append(config)
-        return configs
-
-    def create_config_for(self, files, start, length):
-        config = dict(
-            events_class=alphatwirl.roottree.BEvents,
-            file_paths=files,
-            tree_name=self.treeName,
-            max_events=length,
-            start=start,
-            check_files=self.check_files,
-            skip_error_files=self.skip_error_files,
-        )
-        return config
-
-##__________________________________________________________________||
-def get_files_in_dataset(dataset, max_files=-1):
-    if max_files < 0:
-        return dataset.files
-    return dataset.files[:min(max_files, len(dataset.files))]
-
-##__________________________________________________________________||
-class DatasetIntoEventBuildersSplitter(object):
-
-    def __init__(self,
-                 func_get_files_in_dataset,
-                 func_get_nevents_in_file,
-                 func_create_eventbuilders,
-                 max_events=-1, max_events_per_run=-1,
-                 max_files=-1, max_files_per_run=1):
-
-        self.func_get_files_in_dataset = func_get_files_in_dataset
-        self.func_create_eventbuilders = func_create_eventbuilders
-
-        self.split = functools.partial(
-            create_files_start_length_list,
+        files_start_length_list = create_files_start_length_list(
+            files,
             func_get_nevents_in_file=func_get_nevents_in_file,
             max_events=max_events,
             max_events_per_run=max_events_per_run,
             max_files=max_files,
             max_files_per_run=max_files_per_run
         )
-
-    def __call__(self, files):
-
-        files_start_length_list = self.split(files)
-        # (files, start, length)
-        # e.g.,
+        # list of (files, start, length), e.g.,
         # [
         #     (['A.root'], 0, 80),
         #     (['A.root', 'B.root'], 80, 80),
@@ -191,7 +138,19 @@ class DatasetIntoEventBuildersSplitter(object):
         #     (['C.root'], 20, 10)
         # ]
 
-        return self.func_create_eventbuilders(files_start_length_list)
+        ret = [ ]
+        for files, start, length in files_start_length_list:
+            config = dict(
+                events_class=alphatwirl.roottree.BEvents,
+                file_paths=files,
+                tree_name=tree_name,
+                max_events=length,
+                start=start,
+                check_files=check_files,
+                skip_error_files=skip_error_files,
+            )
+            ret.append(alphatwirl.roottree.BuildEvents(config))
+        return ret
 
 ##__________________________________________________________________||
 class EventReader(object):
