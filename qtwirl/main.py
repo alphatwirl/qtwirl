@@ -68,7 +68,7 @@ def qtwirl(file, reader_cfg,
     )
 
     parallel.begin()
-    ret = eventReader.read(dataset)
+    ret = eventReader.read(files=file)
     parallel.end()
 
     return ret
@@ -178,10 +178,7 @@ class DatasetIntoEventBuildersSplitter(object):
             max_files_per_run=max_files_per_run
         )
 
-    def __call__(self, dataset):
-
-        files = self.func_get_files_in_dataset(dataset)
-        # e.g., ['A.root', 'B.root', 'C.root', 'D.root', 'E.root']
+    def __call__(self, files):
 
         files_start_length_list = self.split(files)
         # (files, start, length)
@@ -224,10 +221,13 @@ class EventReader(object):
     def __repr__(self):
         return self._repr
 
-    def read(self, dataset):
+    def read(self, files):
         self.eventLoopRunner.begin()
 
-        build_events_list = self.split_into_build_events(dataset)
+        Dataset = collections.namedtuple('Dataset', 'name files')
+        dataset = Dataset(name='dataset', files=files)
+
+        build_events_list = self.split_into_build_events(files)
         eventLoops = [ ]
         for build_events in build_events_list:
             reader = copy.deepcopy(self.reader)
