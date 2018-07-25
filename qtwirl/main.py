@@ -35,9 +35,6 @@ def qtwirl(file, reader_cfg,
 
     """
 
-    Dataset = collections.namedtuple('Dataset', 'name files')
-    dataset = Dataset(name='dataset', files=file)
-
     pairs = create_paris_from_tblcfg([reader_cfg['summarizer']], '')
     reader_top = alphatwirl.loop.ReaderComposite()
     collector_top = alphatwirl.loop.CollectorComposite()
