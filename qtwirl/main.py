@@ -38,7 +38,7 @@ def qtwirl(file, reader_cfg,
 
     """
 
-    pairs = create_paris_from_tblcfg([reader_cfg['summarizer']], '')
+    pairs = create_paris_from_tblcfg(reader_cfg['summarizer'], '')
     reader_top = alphatwirl.loop.ReaderComposite()
     collector_top = CollectorComposite()
     for r, c in pairs:
