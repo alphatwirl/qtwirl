@@ -51,8 +51,9 @@ def test_with_sample():
         file=sample_paths,
         reader_cfg=reader_cfg,
         tree_name='tree',
-        process=0,
-        quiet=True
+        process=16,
+        quiet=False,
+        max_events_per_process=500
     )
 
     ##
