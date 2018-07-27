@@ -209,9 +209,7 @@ class EventReader(object):
 
         # assert 1 == len(runid_reader_map)
         reader = runid_reader_map.values()[0]
-        dataset_readers_list = [(dataset.name, reader)]
-
-        return self.collector.collect(dataset_readers_list)
+        return self.collector.collect(reader)
 
 ##__________________________________________________________________||
 class CollectorComposite(object):
@@ -248,7 +246,7 @@ class CollectorComposite(object):
         """
         self.components.append(collector)
 
-    def collect(self, dataset_readers_list):
+    def collect(self, reader):
         """collect results
 
 
@@ -261,7 +259,7 @@ class CollectorComposite(object):
         for i, collector in enumerate(self.components):
             report = alphatwirl.progressbar.ProgressReport(name='collecting results', done=(i + 1), total=len(self.components))
             alphatwirl.progressbar.report_progress(report)
-            ret.append(collector.collect([r.readers[i] for d, r in dataset_readers_list ]))
+            ret.append(collector.collect(reader.readers[i]))
         return ret
 
 
@@ -281,8 +279,7 @@ class ToTupleList(object):
             ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
-    def combine(self, dataset_readers_list):
-        reader = dataset_readers_list[0]
+    def combine(self, reader):
         summarizer = reader.results()
 
         ret = summarizer.to_tuple_list()
@@ -324,8 +321,8 @@ class ToDataFrame(object):
             ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
-    def combine(self, dataset_readers_list):
-        tuple_list = self.to_tuple_list.combine(dataset_readers_list)
+    def combine(self, reader):
+        tuple_list = self.to_tuple_list.combine(reader)
         if tuple_list is None:
             return None
         header = tuple_list[0]
