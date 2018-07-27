@@ -207,8 +207,9 @@ class EventReader(object):
             merge_in_order(runid_reader_map, runid, reader)
             runids_towait.remove(runid)
 
-        dataset_readers_list = [(dataset.name, list(runid_reader_map.values()))]
-        # e.g., [('dataset', [reader])]
+        # assert 1 == len(runid_reader_map)
+        reader = runid_reader_map.values()[0]
+        dataset_readers_list = [(dataset.name, reader)]
 
         return self.collector.collect(dataset_readers_list)
 
@@ -260,8 +261,7 @@ class CollectorComposite(object):
         for i, collector in enumerate(self.components):
             report = alphatwirl.progressbar.ProgressReport(name='collecting results', done=(i + 1), total=len(self.components))
             alphatwirl.progressbar.report_progress(report)
-            ret.append(collector.collect([(dataset, tuple(r.readers[i] for r in readerComposites))
-                                          for dataset, readerComposites in dataset_readers_list]))
+            ret.append(collector.collect([(d, (r.readers[i], )) for d, r in dataset_readers_list ]))
         return ret
 
 
