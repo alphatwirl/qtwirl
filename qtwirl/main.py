@@ -254,10 +254,10 @@ class CollectorComposite(object):
         """
 
         ret = [ ]
-        for i, collector in enumerate(self.components):
+        for i, (r, collector) in enumerate(zip(reader.readers, self.components)):
             report = alphatwirl.progressbar.ProgressReport(name='collecting results', done=(i + 1), total=len(self.components))
             alphatwirl.progressbar.report_progress(report)
-            ret.append(collector.collect(reader.readers[i]))
+            ret.append(collector.collect(r))
         return ret
 
 
