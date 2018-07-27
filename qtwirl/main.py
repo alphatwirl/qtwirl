@@ -191,9 +191,9 @@ class EventReader(object):
 
         build_events_list = self.split_into_build_events(files)
         eventLoops = [ ]
-        for build_events in build_events_list:
+        for i, build_events in enumerate(build_events_list):
             reader = copy.deepcopy(self.reader)
-            eventLoop = self.EventLoop(build_events, reader, dataset.name)
+            eventLoop = self.EventLoop(build_events, reader, '{} / {}'.format(i, njobs))
             eventLoops.append(eventLoop)
         runids = self.eventLoopRunner.run_multiple(eventLoops)
         # e.g., [0, 1, 2]
