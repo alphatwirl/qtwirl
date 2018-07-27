@@ -206,7 +206,7 @@ class EventReader(object):
             runids_towait.remove(runid)
 
         # assert 1 == len(runid_reader_map)
-        reader = runid_reader_map.values()[0]
+        reader = list(runid_reader_map.values())[0]
         return self.collector.collect(reader)
 
 ##__________________________________________________________________||
