@@ -186,10 +186,8 @@ class EventReader(object):
     def read(self, files):
         self.eventLoopRunner.begin()
 
-        Dataset = collections.namedtuple('Dataset', 'name files')
-        dataset = Dataset(name='dataset', files=files)
-
         build_events_list = self.split_into_build_events(files)
+        njobs = len(build_events_list)
         eventLoops = [ ]
         for i, build_events in enumerate(build_events_list):
             reader = copy.deepcopy(self.reader)
