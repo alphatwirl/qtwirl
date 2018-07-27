@@ -261,7 +261,7 @@ class CollectorComposite(object):
         for i, collector in enumerate(self.components):
             report = alphatwirl.progressbar.ProgressReport(name='collecting results', done=(i + 1), total=len(self.components))
             alphatwirl.progressbar.report_progress(report)
-            ret.append(collector.collect([(d, (r.readers[i], )) for d, r in dataset_readers_list ]))
+            ret.append(collector.collect([r.readers[i] for d, r in dataset_readers_list ]))
         return ret
 
 
@@ -282,27 +282,8 @@ class ToTupleList(object):
         )
 
     def combine(self, dataset_readers_list):
-
-
-        if len(dataset_readers_list) == 0: return None
-
-        # e.g.,
-        # dataset_readers_list = [
-        #     ('QCD',    (reader1, reader2)),
-        #     ('TTJets', (reader3, )),
-        #     ('WJets',  (reader4, )),
-        #     ('ZJets',  ( )),
-        # ]
-
-        readers_list = itertools.chain(*(r for _, r in dataset_readers_list))
-        # e.g.,
-        # readers_list = (reader1, reader2, reader3, reader4)
-
-        summarizers_list = (r.results() for r in readers_list)
-        # e.g.,
-        # summarizers_list = (summarizer1, summarizer2, summarizer3, summarizer4)
-
-        summarizer = sum(summarizers_list)
+        reader = dataset_readers_list[0]
+        summarizer = reader.results()
 
         ret = summarizer.to_tuple_list()
         # e.g.,
