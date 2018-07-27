@@ -40,7 +40,7 @@ def qtwirl(file, reader_cfg,
 
     pairs = create_paris_from_tblcfg([reader_cfg['summarizer']], '')
     reader_top = alphatwirl.loop.ReaderComposite()
-    collector_top = alphatwirl.loop.CollectorComposite()
+    collector_top = CollectorComposite()
     for r, c in pairs:
         reader_top.add(r)
         collector_top.add(c)
@@ -213,6 +213,58 @@ class EventReader(object):
         return self.collector.collect(dataset_readers_list)
 
 ##__________________________________________________________________||
+class CollectorComposite(object):
+
+    """A composite of collectors.
+
+    This class is a composite in the composite pattern.
+
+    Examples of collectors are instances of `Collector`,
+    `NullCollector`, and this class.
+
+    """
+
+    def __init__(self):
+
+        self.components = [ ]
+
+    def __repr__(self):
+        name_value_pairs = (
+            ('components',       self.components),
+        )
+        return '{}({})'.format(
+            self.__class__.__name__,
+            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
+        )
+
+    def add(self, collector):
+        """add a collector
+
+
+        Args:
+            collector: the collector to be added
+
+        """
+        self.components.append(collector)
+
+    def collect(self, dataset_readers_list):
+        """collect results
+
+
+        Returns:
+            a list of results
+
+        """
+
+        ret = [ ]
+        for i, collector in enumerate(self.components):
+            report = alphatwirl.progressbar.ProgressReport(name='collecting results', done=(i + 1), total=len(self.components))
+            alphatwirl.progressbar.report_progress(report)
+            ret.append(collector.collect([(dataset, tuple(r.readers[i] for r in readerComposites))
+                                          for dataset, readerComposites in dataset_readers_list]))
+        return ret
+
+
 class ToTupleList(object):
     def __init__(self, summaryColumnNames
                  ):
