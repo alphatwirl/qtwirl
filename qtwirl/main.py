@@ -100,19 +100,18 @@ def build_counter_collector_pair(tblcfg):
     summarizer = alphatwirl.summary.Summarizer(
         Summary=tblcfg['summaryClass']
     )
+    collector = Collector(
+        summaryColumnNames=tblcfg['keyOutColumnNames'] + tblcfg['valOutColumnNames']
+    )
     reader = alphatwirl.summary.Reader(
         keyValComposer=keyValComposer,
         summarizer=summarizer,
+        collector=collector,
         nextKeyComposer=nextKeyComposer,
         weightCalculator=tblcfg['weight'],
         nevents=tblcfg['nevents']
     )
-    resultsCombinationMethod = ToDataFrame(
-        summaryColumnNames=tblcfg['keyOutColumnNames'] + tblcfg['valOutColumnNames']
-    )
-    deliveryMethod = None
-    collector = alphatwirl.loop.Collector(resultsCombinationMethod, deliveryMethod)
-    return reader, collector
+    return reader, None
 
 ##__________________________________________________________________||
 def create_fileloaders(
@@ -207,7 +206,8 @@ class EventReader(object):
 
         # assert 1 == len(runid_reader_map)
         reader = list(runid_reader_map.values())[0]
-        return self.collector.collect(reader)
+        return reader.collect()
+        ## return self.collector.collect(reader)
 
 ##__________________________________________________________________||
 class CollectorComposite(object):
@@ -261,14 +261,12 @@ class CollectorComposite(object):
         return ret
 
 
-class ToTupleList(object):
-    def __init__(self, summaryColumnNames
-                 ):
-
+##__________________________________________________________________||
+class Collector(object):
+    def __init__(self, summaryColumnNames):
         self.summaryColumnNames = summaryColumnNames
 
     def __repr__(self):
-
         name_value_pairs = (
             ('summaryColumnNames', self.summaryColumnNames),
         )
@@ -277,10 +275,8 @@ class ToTupleList(object):
             ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
         )
 
-    def combine(self, reader):
-        summarizer = reader.results()
-
-        ret = summarizer.to_tuple_list()
+    def __call__(self, reader):
+        tuple_list = reader.summarizer.to_tuple_list()
         # e.g.,
         # ret = [
         #         (200, 2, 120, 240),
@@ -290,41 +286,8 @@ class ToTupleList(object):
         #         (300, 3, 15, 30)
         # ]
 
-        ret.insert(0, self.summaryColumnNames)
-        # e.g.,
-        # [
-        #     ('htbin', 'njetbin', 'n', 'nvar'),
-        #     (    200,         2, 120,    240),
-        #     (    300,         2, 490,    980),
-        #     (    300,         3, 210,    420),
-        #     (    300,         2,  20,     40),
-        #     (    300,         3,  15,     30)
-        # ]
-
-        return ret
-
-class ToDataFrame(object):
-    def __init__(self, summaryColumnNames):
-
-        self.summaryColumnNames = summaryColumnNames
-        self.to_tuple_list = ToTupleList(summaryColumnNames = summaryColumnNames)
-
-    def __repr__(self):
-
-        name_value_pairs = (
-            ('summaryColumnNames', self.summaryColumnNames),
-        )
-        return '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
-        )
-
-    def combine(self, reader):
-        tuple_list = self.to_tuple_list.combine(reader)
         if tuple_list is None:
             return None
-        header = tuple_list[0]
-        contents = tuple_list[1:]
-        return pd.DataFrame(contents, columns = header)
+        return pd.DataFrame(tuple_list, columns=self.summaryColumnNames)
 
 ##__________________________________________________________________||
