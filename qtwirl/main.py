@@ -204,58 +204,6 @@ class EventReader(object):
         return reader.collect()
 
 ##__________________________________________________________________||
-class CollectorComposite(object):
-
-    """A composite of collectors.
-
-    This class is a composite in the composite pattern.
-
-    Examples of collectors are instances of `Collector`,
-    `NullCollector`, and this class.
-
-    """
-
-    def __init__(self):
-
-        self.components = [ ]
-
-    def __repr__(self):
-        name_value_pairs = (
-            ('components',       self.components),
-        )
-        return '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
-        )
-
-    def add(self, collector):
-        """add a collector
-
-
-        Args:
-            collector: the collector to be added
-
-        """
-        self.components.append(collector)
-
-    def collect(self, reader):
-        """collect results
-
-
-        Returns:
-            a list of results
-
-        """
-
-        ret = [ ]
-        for i, (r, collector) in enumerate(zip(reader.readers, self.components)):
-            report = alphatwirl.progressbar.ProgressReport(name='collecting results', done=(i + 1), total=len(self.components))
-            alphatwirl.progressbar.report_progress(report)
-            ret.append(collector.collect(r))
-        return ret
-
-
-##__________________________________________________________________||
 class Collector(object):
     def __init__(self, summaryColumnNames):
         self.summaryColumnNames = summaryColumnNames
