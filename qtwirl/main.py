@@ -39,9 +39,7 @@ def qtwirl(file, reader_cfg,
     """
 
     readers = create_readers_from_tblcfg(reader_cfg['summarizer'], '')
-    reader_top = alphatwirl.loop.ReaderComposite()
-    for r in readers:
-        reader_top.add(r)
+    reader_top = alphatwirl.loop.ReaderComposite(readers=readers)
 
     parallel = alphatwirl.parallel.build_parallel(
         parallel_mode=parallel_mode, quiet=quiet,
