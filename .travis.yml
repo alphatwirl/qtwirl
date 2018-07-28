@@ -8,19 +8,15 @@ matrix:
           env: ALPHATWIRL=master ROOT=6.04 PANDAS=0.22
         - python: 2.7
           env: ALPHATWIRL=v0.17.1 ROOT=6.04 PANDAS=0.22
-        - python: 2.7
-          env: ALPHATWIRL=v0.16.0 ROOT=6.04 PANDAS=0.22
         - python: 3.6
           env: ALPHATWIRL=master ROOT=6.05 PANDAS=0.22
         - python: 3.6
           env: ALPHATWIRL=v0.17.1 ROOT=6.05 PANDAS=0.22
-        - python: 3.6
-          env: ALPHATWIRL=v0.16.0 ROOT=6.05 PANDAS=0.22
     allow_failures:
         - python: 2.7
-          env: ALPHATWIRL=v0.16.0 ROOT=6.04 PANDAS=0.22
+          env: ALPHATWIRL=v0.17.1 ROOT=6.04 PANDAS=0.22
         - python: 3.6
-          env: ALPHATWIRL=v0.16.0 ROOT=6.05 PANDAS=0.22
+          env: ALPHATWIRL=v0.17.1 ROOT=6.05 PANDAS=0.22
 
 install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then curl --silent http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -o miniconda.sh; fi
