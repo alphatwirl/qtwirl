@@ -38,12 +38,10 @@ def qtwirl(file, reader_cfg,
 
     """
 
-    pairs = create_paris_from_tblcfg(reader_cfg['summarizer'], '')
+    readers = create_readers_from_tblcfg(reader_cfg['summarizer'], '')
     reader_top = alphatwirl.loop.ReaderComposite()
-    collector_top = CollectorComposite()
-    for r, c in pairs:
+    for r in readers:
         reader_top.add(r)
-        collector_top.add(c)
 
     parallel = alphatwirl.parallel.build_parallel(
         parallel_mode=parallel_mode, quiet=quiet,
@@ -60,7 +58,6 @@ def qtwirl(file, reader_cfg,
     eventReader = EventReader(
         eventLoopRunner=eventLoopRunner,
         reader=reader_top,
-        collector=collector_top,
         split_into_build_events=func_create_fileloaders,
     )
 
@@ -71,7 +68,7 @@ def qtwirl(file, reader_cfg,
     return ret
 
 ##__________________________________________________________________||
-def create_paris_from_tblcfg(tblcfg, outdir):
+def create_readers_from_tblcfg(tblcfg, outdir):
 
     tableConfigCompleter = alphatwirl.configure.TableConfigCompleter(
         defaultSummaryClass=alphatwirl.summary.Count,
@@ -84,11 +81,11 @@ def create_paris_from_tblcfg(tblcfg, outdir):
     # do not recreate tables that already exist unless the force option is used
     tblcfg = [c for c in tblcfg if c['outFile'] and not os.path.exists(c['outFilePath'])]
 
-    ret = [build_counter_collector_pair(c) for c in tblcfg]
+    ret = [build_counter(c) for c in tblcfg]
     return ret
 
 ##__________________________________________________________________||
-def build_counter_collector_pair(tblcfg):
+def build_counter(tblcfg):
     keyValComposer = alphatwirl.summary.KeyValueComposer(
         keyAttrNames=tblcfg['keyAttrNames'],
         binnings=tblcfg['binnings'],
@@ -111,7 +108,7 @@ def build_counter_collector_pair(tblcfg):
         weightCalculator=tblcfg['weight'],
         nevents=tblcfg['nevents']
     )
-    return reader, None
+    return reader
 
 ##__________________________________________________________________||
 def create_fileloaders(
@@ -156,12 +153,11 @@ def create_fileloaders(
 
 ##__________________________________________________________________||
 class EventReader(object):
-    def __init__(self, eventLoopRunner, reader, collector,
+    def __init__(self, eventLoopRunner, reader,
                  split_into_build_events):
 
         self.eventLoopRunner = eventLoopRunner
         self.reader = reader
-        self.collector = collector
         self.split_into_build_events = split_into_build_events
 
         self.EventLoop = alphatwirl.loop.EventLoop
@@ -171,7 +167,6 @@ class EventReader(object):
         name_value_pairs = (
             ('eventLoopRunner', self.eventLoopRunner),
             ('reader', self.reader),
-            ('collector', self.collector),
             ('split_into_build_events', self.split_into_build_events),
         )
         self._repr = '{}({})'.format(
@@ -207,7 +202,6 @@ class EventReader(object):
         # assert 1 == len(runid_reader_map)
         reader = list(runid_reader_map.values())[0]
         return reader.collect()
-        ## return self.collector.collect(reader)
 
 ##__________________________________________________________________||
 class CollectorComposite(object):
