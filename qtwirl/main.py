@@ -42,7 +42,7 @@ def qtwirl(file, reader_cfg,
 
     files = parse_file(file)
 
-    readers = create_readers_from_tblcfg(reader_cfg['summarizer'], '')
+    readers = create_readers_from_tblcfg(reader_cfg['summarizer'])
     reader_top = alphatwirl.loop.ReaderComposite(readers=readers)
 
     parallel = alphatwirl.parallel.build_parallel(
@@ -70,18 +70,16 @@ def qtwirl(file, reader_cfg,
     return ret
 
 ##__________________________________________________________________||
-def create_readers_from_tblcfg(tblcfg, outdir):
+def create_readers_from_tblcfg(tblcfg):
+
+    for c in tblcfg:
+        c['outFile'] = c.get('outFile', False)
 
     tableConfigCompleter = alphatwirl.configure.TableConfigCompleter(
-        defaultSummaryClass=alphatwirl.summary.Count,
-        defaultOutDir=outdir,
-        createOutFileName=alphatwirl.configure.TableFileNameComposer(default_prefix='tbl_n.dataset')
+        defaultSummaryClass=alphatwirl.summary.Count
     )
 
     tblcfg = [tableConfigCompleter.complete(c) for c in tblcfg]
-
-    # do not recreate tables that already exist unless the force option is used
-    tblcfg = [c for c in tblcfg if c['outFile'] and not os.path.exists(c['outFilePath'])]
 
     ret = [build_counter(c) for c in tblcfg]
     return ret
