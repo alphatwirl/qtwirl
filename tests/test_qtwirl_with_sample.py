@@ -35,8 +35,8 @@ def test_with_sample_one_dict():
     ##
     tbl_dir = os.path.join(os.path.dirname(__file__), 'tbl')
     tbl_paths = [
-        os.path.join(tbl_dir, 'tbl_n.jet_pt-w.txt'),
-        os.path.join(tbl_dir, 'tbl_n.met.txt')
+        os.path.join(tbl_dir, '00', 'tbl_n.jet_pt-w.txt'),
+        os.path.join(tbl_dir, '00', 'tbl_n.met.txt')
     ]
     tbls = [pd.read_table(p, delim_whitespace=True) for p in tbl_paths]
 
@@ -76,14 +76,15 @@ def test_with_sample():
     ##
     tbl_dir = os.path.join(os.path.dirname(__file__), 'tbl')
     tbl_paths = [
-        os.path.join(tbl_dir, 'tbl_n.jet_pt-w.txt'),
-        os.path.join(tbl_dir, 'tbl_n.met.txt')
+        os.path.join(tbl_dir, '01', 'tbl_n.jet_pt-w.txt'),
+        os.path.join(tbl_dir, '01', 'tbl_n.met.txt')
     ]
     tbls = [pd.read_table(p, delim_whitespace=True) for p in tbl_paths]
 
     ##
     RoundLog = alphatwirl.binning.RoundLog
     reader_cfg = [
+        dict(selection_cfg=dict(All=('ev: ev.njets[0] > 4', ))),
         dict(keyAttrNames=('jet_pt', ),
              binnings=(RoundLog(0.1, 100), ),
              keyIndices=('*', ),

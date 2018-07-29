@@ -66,6 +66,8 @@ def qtwirl(file, reader_cfg,
     ret = eventReader.read(files=files)
     parallel.end()
 
+    if isinstance(reader, alphatwirl.loop.ReaderComposite):
+        ret = [r for r in ret if r is not None]
     return ret
 
 ##__________________________________________________________________||
@@ -82,6 +84,8 @@ def _create_reader_for_single_cfg(cfg):
     key, val = list(cfg.items())[0]
     if key == 'table_cfg':
         return create_reader_from_table_cfg(val)
+    elif key == 'selection_cfg':
+        return alphatwirl.selection.build_selection(path_cfg=val)
     else:
         return None
 
