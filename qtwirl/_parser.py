@@ -12,7 +12,7 @@ def parse_file(file):
 def parse_reader_cfg(reader_cfg):
 
     if _is_dict(reader_cfg):
-        return [_wrap_table_cfg(reader_cfg)]
+        return _wrap_table_cfg(reader_cfg)
 
     ret = [_wrap_table_cfg(c) for c in reader_cfg]
 

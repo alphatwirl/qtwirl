@@ -27,19 +27,19 @@ tblcfg_dict2 = dict(
 ##__________________________________________________________________||
 @pytest.mark.parametrize('arg, expected', [
     pytest.param(
-        dict(), [dict(table_cfg=dict())], id='empty-dict'
+        dict(), dict(table_cfg=dict()), id='empty-dict'
     ),
     pytest.param(
         [ ], [ ], id='empty-list'
     ),
     pytest.param(
         dict(tblcfg_dict1),
-        [dict(table_cfg=dict(tblcfg_dict1))],
+        dict(table_cfg=dict(tblcfg_dict1)),
         id='dict-short'
     ),
     pytest.param(
         dict(table_cfg=dict(tblcfg_dict1)),
-        [dict(table_cfg=dict(tblcfg_dict1))],
+        dict(table_cfg=dict(tblcfg_dict1)),
         id='dict-full'
     ),
     pytest.param(
