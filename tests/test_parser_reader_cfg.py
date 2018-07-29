@@ -24,6 +24,9 @@ tblcfg_dict2 = dict(
     binnings=(RoundLog(0.1, 100), ),
 )
 
+selection_cfg_dict = dict(All=('ev: ev.njets[0] > 4', ))
+selection_cfg_str = 'ev: ev.njets[0] > 4'
+
 ##__________________________________________________________________||
 @pytest.mark.parametrize('arg, expected', [
     pytest.param(
@@ -48,6 +51,25 @@ tblcfg_dict2 = dict(
         id='list-with-one-dict'
     ),
     pytest.param(
+        [dict(tblcfg_dict1), dict(tblcfg_dict2)],
+        [
+            dict(table_cfg=dict(tblcfg_dict1)),
+            dict(table_cfg=dict(tblcfg_dict2)),
+        ],
+        id='two-table-cfgs-short'
+    ),
+    pytest.param(
+        [
+            dict(table_cfg=dict(tblcfg_dict1)),
+            dict(tblcfg_dict2),
+        ],
+        [
+            dict(table_cfg=dict(tblcfg_dict1)),
+            dict(table_cfg=dict(tblcfg_dict2)),
+        ],
+        id='two-table-cfgs-full-short'
+    ),
+    pytest.param(
         [
             dict(table_cfg=dict(tblcfg_dict1)),
             dict(table_cfg=dict(tblcfg_dict2)),
@@ -56,7 +78,39 @@ tblcfg_dict2 = dict(
             dict(table_cfg=dict(tblcfg_dict1)),
             dict(table_cfg=dict(tblcfg_dict2)),
         ],
-        id='two_table_cfgs'
+        id='two-table-cfgs-full'
+    ),
+    pytest.param(
+        [
+            dict(selection_cfg=selection_cfg_dict),
+            dict(tblcfg_dict1),
+        ],
+        [
+            dict(selection_cfg=selection_cfg_dict),
+            dict(table_cfg=tblcfg_dict1),
+        ],
+        id='one-selection-dict-one-table'
+    ),
+    pytest.param(
+        [
+            dict(selection_cfg=selection_cfg_str),
+            dict(tblcfg_dict1),
+        ],
+        [
+            dict(selection_cfg=selection_cfg_str),
+            dict(table_cfg=tblcfg_dict1),
+        ],
+        id='one-selection-str-one-table'
+    ),
+    pytest.param(
+        dict(selection_cfg=selection_cfg_dict),
+        dict(selection_cfg=selection_cfg_dict),
+        id='one-selection-dict'
+    ),
+    pytest.param(
+        dict(selection_cfg=selection_cfg_str),
+        dict(selection_cfg=selection_cfg_str),
+        id='one-selection-str'
     ),
 ])
 def test_parse_reader_cfg(arg, expected):
