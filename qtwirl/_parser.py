@@ -1,4 +1,5 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
+import alphatwirl
 
 ##__________________________________________________________________||
 def parse_file(file):
@@ -26,6 +27,13 @@ def _wrap_table_cfg(cfg):
         return cfg
 
     return {default_config_key: cfg}
+
+##__________________________________________________________________||
+def complete_table_cfg(cfg):
+    completer = alphatwirl.configure.TableConfigCompleter(
+        defaultSummaryClass=alphatwirl.summary.Count)
+    ret = completer.complete(cfg)
+    return ret
 
 ##__________________________________________________________________||
 def _is_dict(obj):
