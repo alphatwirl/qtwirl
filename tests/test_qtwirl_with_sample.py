@@ -42,15 +42,14 @@ def test_with_sample():
 
     ##
     RoundLog = alphatwirl.binning.RoundLog
-    reader_cfg = dict(
-        summarizer=[
-            dict(keyAttrNames=('jet_pt', ),
-                 binnings=(RoundLog(0.1, 100), ),
-                 keyIndices=('*', ),
-                 keyOutColumnNames=('jet_pt', )),
-            dict(keyAttrNames=('met', ),
-                 binnings=(RoundLog(0.1, 100), )),
-        ])
+    reader_cfg = [
+        dict(keyAttrNames=('jet_pt', ),
+             binnings=(RoundLog(0.1, 100), ),
+             keyIndices=('*', ),
+             keyOutColumnNames=('jet_pt', )),
+        dict(keyAttrNames=('met', ),
+             binnings=(RoundLog(0.1, 100), )),
+    ]
 
     results = qtwirl(
         file=sample_paths,

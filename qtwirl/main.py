@@ -15,7 +15,7 @@ from alphatwirl.roottree.inspect import get_entries_in_tree_in_file
 from alphatwirl.loop.splitfuncs import create_files_start_length_list
 from alphatwirl.loop.merge import merge_in_order
 
-from ._parser import parse_file
+from ._parser import parse_file, parse_reader_cfg
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']
@@ -42,8 +42,7 @@ def qtwirl(file, reader_cfg,
 
     files = parse_file(file)
 
-    readers = create_readers_from_tblcfg(reader_cfg['summarizer'])
-    reader_top = alphatwirl.loop.ReaderComposite(readers=readers)
+    reader = create_reader(reader_cfg)
 
     parallel = alphatwirl.parallel.build_parallel(
         parallel_mode=parallel_mode, quiet=quiet,
@@ -59,7 +58,7 @@ def qtwirl(file, reader_cfg,
         check_files=True, skip_error_files=True)
     eventReader = EventReader(
         eventLoopRunner=eventLoopRunner,
-        reader=reader_top,
+        reader=reader,
         split_into_build_events=func_create_fileloaders,
     )
 
@@ -70,19 +69,28 @@ def qtwirl(file, reader_cfg,
     return ret
 
 ##__________________________________________________________________||
-def create_readers_from_tblcfg(tblcfg):
-
-    for c in tblcfg:
-        c['outFile'] = c.get('outFile', False)
-
-    tableConfigCompleter = alphatwirl.configure.TableConfigCompleter(
-        defaultSummaryClass=alphatwirl.summary.Count
-    )
-
-    tblcfg = [tableConfigCompleter.complete(c) for c in tblcfg]
-
-    ret = [build_counter(c) for c in tblcfg]
+def create_reader(cfg):
+    cfg = parse_reader_cfg(cfg)
+    readers = [ ]
+    for c in cfg:
+        # c has only one item
+        key, val = list(c.items())[0]
+        if key == 'table_cfg':
+            reader =  create_reader_from_table_cfg(val)
+            readers.append(reader)
+        else:
+            # unknown
+            pass
+    ret = alphatwirl.loop.ReaderComposite(readers=readers)
     return ret
+
+##__________________________________________________________________||
+def create_reader_from_table_cfg(cfg):
+    cfg['outFile'] = cfg.get('outFile', False)
+    tableConfigCompleter = alphatwirl.configure.TableConfigCompleter(
+        defaultSummaryClass=alphatwirl.summary.Count)
+    cfg = tableConfigCompleter.complete(cfg)
+    return build_counter(cfg)
 
 ##__________________________________________________________________||
 def build_counter(tblcfg):
