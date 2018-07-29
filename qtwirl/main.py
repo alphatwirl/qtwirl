@@ -15,6 +15,8 @@ from alphatwirl.roottree.inspect import get_entries_in_tree_in_file
 from alphatwirl.loop.splitfuncs import create_files_start_length_list
 from alphatwirl.loop.merge import merge_in_order
 
+from .parser import parse_file
+
 ##__________________________________________________________________||
 __all__ = ['qtwirl']
 
@@ -38,6 +40,8 @@ def qtwirl(file, reader_cfg,
 
     """
 
+    files = parse_file(file)
+
     readers = create_readers_from_tblcfg(reader_cfg['summarizer'], '')
     reader_top = alphatwirl.loop.ReaderComposite(readers=readers)
 
@@ -60,7 +64,7 @@ def qtwirl(file, reader_cfg,
     )
 
     parallel.begin()
-    ret = eventReader.read(files=file)
+    ret = eventReader.read(files=files)
     parallel.end()
 
     return ret
