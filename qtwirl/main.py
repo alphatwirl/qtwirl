@@ -15,7 +15,7 @@ from alphatwirl.roottree.inspect import get_entries_in_tree_in_file
 from alphatwirl.loop.splitfuncs import create_files_start_length_list
 from alphatwirl.loop.merge import merge_in_order
 
-from .parser import parse_file
+from ._parser import parse_file
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']

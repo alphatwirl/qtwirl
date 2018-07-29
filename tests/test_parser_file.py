@@ -1,7 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import pytest
 
-from qtwirl.parser import parse_file
+from qtwirl._parser import parse_file
 
 ##__________________________________________________________________||
 @pytest.mark.parametrize('arg, expected', [
