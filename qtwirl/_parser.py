@@ -18,6 +18,16 @@ def parse_reader_cfg(reader_cfg):
 
     return ret
 
+def _wrap_table_cfg(cfg):
+    config_keys = ('table_cfg', 'selection_cfg', 'reader')
+    default_config_key = 'table_cfg'
+    if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
+        # already wrapped
+        return cfg
+
+    return {default_config_key: cfg}
+
+##__________________________________________________________________||
 def _is_dict(obj):
     try:
         # check for mixin methods of mapping
@@ -29,14 +39,5 @@ def _is_dict(obj):
         return False
 
     return True
-
-def _wrap_table_cfg(cfg):
-    config_keys = ('table_cfg', 'selection_cfg', 'reader')
-    default_config_key = 'table_cfg'
-    if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
-        # already wrapped
-        return cfg
-
-    return {default_config_key: cfg}
 
 ##__________________________________________________________________||
