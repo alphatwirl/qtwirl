@@ -27,6 +27,8 @@ tblcfg_dict2 = dict(
 selection_cfg_dict = dict(All=('ev: ev.njets[0] > 4', ))
 selection_cfg_str = 'ev: ev.njets[0] > 4'
 
+scribbler1 = mock.Mock()
+
 ##__________________________________________________________________||
 @pytest.mark.parametrize('arg, expected', [
     pytest.param(
@@ -111,6 +113,17 @@ selection_cfg_str = 'ev: ev.njets[0] > 4'
         dict(selection_cfg=selection_cfg_str),
         dict(selection_cfg=selection_cfg_str),
         id='one-selection-str'
+    ),
+    pytest.param(
+        [
+            dict(reader=scribbler1),
+            dict(tblcfg_dict1),
+        ],
+        [
+            dict(reader=scribbler1),
+            dict(table_cfg=tblcfg_dict1),
+        ],
+        id='one-scribbler-one-table'
     ),
 ])
 def test_parse_reader_cfg(arg, expected):

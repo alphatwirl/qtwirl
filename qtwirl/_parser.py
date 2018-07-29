@@ -31,7 +31,7 @@ def _is_dict(obj):
     return True
 
 def _wrap_table_cfg(cfg):
-    config_keys = ('table_cfg', 'selection_cfg')
+    config_keys = ('table_cfg', 'selection_cfg', 'reader')
     default_config_key = 'table_cfg'
     if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
         # already wrapped
