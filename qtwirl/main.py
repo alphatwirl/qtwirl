@@ -86,6 +86,8 @@ def _create_reader_for_single_cfg(cfg):
         return create_reader_from_table_cfg(val)
     elif key == 'selection_cfg':
         return alphatwirl.selection.build_selection(path_cfg=val)
+    elif key == 'reader':
+        return val
     else:
         return None
 
