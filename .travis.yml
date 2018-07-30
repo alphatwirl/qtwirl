@@ -7,9 +7,13 @@ matrix:
         - python: 2.7
           env: ALPHATWIRL=master ROOT=6.04 PANDAS=0.22
         - python: 2.7
+          env: ALPHATWIRL=v0.18.3 ROOT=6.04 PANDAS=0.22
+        - python: 2.7
           env: ALPHATWIRL=v0.17.1 ROOT=6.04 PANDAS=0.22
         - python: 3.6
           env: ALPHATWIRL=master ROOT=6.05 PANDAS=0.22
+        - python: 3.6
+          env: ALPHATWIRL=v0.18.3 ROOT=6.05 PANDAS=0.22
         - python: 3.6
           env: ALPHATWIRL=v0.17.1 ROOT=6.05 PANDAS=0.22
     allow_failures:
@@ -48,3 +52,14 @@ after_success:
   - codecov
 
 cache: apt
+
+deploy:
+  provider: pypi
+  user: tai.sakuma
+  distributions: sdist bdist_wheel --universal
+  password:
+    secure: ueu4oorK3UuRA1Nvjl9Gy9FsMB6p0XqpPoQaAy6Y7lu4J1nwo3XivzUEUb4IkT/PPCan53HkA1OLfiODT882ac3DAkhU2aRhBhxyc4Vp9c/Y6+CU94uTqaaFz9lHEGRJ8Zxb5YSxOJJLZ1XLdi80mepIpq9tmbHs5I8oLjVqkqCB69Y0ZFdGv3+rsv5OvyKt7f6m0xS5q4+W8q0m10Bjbx/lFwJd2GhcSNjVqNbMN6h/QYp6yXTEyfezZEkqy/fQTRXvhifaQL66muOhrHfuXTxorAf+5Bi1Buw0WQLtmGkWCSRzmi/3h+ZByAAkMWvjQiOcjwQWIRnL322GVYeS2u3YQ7AKD8ZP2FqRJ6+fCniBhYoqlJ6uraHz3AxMpm/HAEAnIY10Kl6Sn1iyekRtkEMdfyYAPae55ouk6HLIfdScb9DLCvplfiCi8fyAjhaB0yliRMGR6zDh3Rz6eRb5G7+tZHFAMATy4tzoybGb1TLEm7ZBT2TgRLTgSVJXDpygghkkpPPZUkVPb1bwZcjsF1hHogYosqiif2NErBT64QvVIC+AReZg/jOI3MzE/Gw/Y6VGAsylJbVi+tfo4bdUW/GEtPR82hdQ6+8HrT2eHAbQhxNQjqYZYPC42lz0aoejPK0IRkNggn9REgx/XxnEizx7P+lhGWvUojG5oFnLRk4=
+  on:
+    tags: true
+    python: 3.6
+    condition: $ALPHATWIRL == 'master' && $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
