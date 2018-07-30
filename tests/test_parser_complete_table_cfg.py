@@ -251,5 +251,6 @@ binning2 = MockBinning()
 def test_complete(arg, expected):
     actual = complete_table_cfg(arg)
     assert expected == actual
+    assert arg is not actual
 
 ##__________________________________________________________________||
