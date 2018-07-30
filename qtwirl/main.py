@@ -25,7 +25,7 @@ def qtwirl(file, reader_cfg,
            tree_name=None,
            parallel_mode='multiprocessing',
            dispatcher_options=dict(),
-           process=4, quiet=False,
+           process=4, quiet=True,
            user_modules=(),
            max_events=-1, max_files=-1,
            max_events_per_process=-1, max_files_per_process=1):
