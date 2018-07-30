@@ -113,7 +113,7 @@ def build_counter(tblcfg):
         Summary=tblcfg['summaryClass']
     )
     collector = Collector(
-        summaryColumnNames=tblcfg['keyOutColumnNames'] + tblcfg['valOutColumnNames']
+        summaryColumnNames=tblcfg['keyOutColumnNames'] + tblcfg['summaryColumnNames']
     )
     reader = alphatwirl.summary.Reader(
         keyValComposer=keyValComposer,

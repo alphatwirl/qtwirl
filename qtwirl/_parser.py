@@ -70,11 +70,11 @@ def complete_table_cfg(cfg):
             ret['valIndices'] = (ret['valIndices'], )
 
     use_default_summary_class = 'summaryClass' not in cfg
-    if 'valOutColumnNames' not in ret:
+    if 'summaryColumnNames' not in ret:
         if use_default_summary_class:
-            ret['valOutColumnNames'] = default_vocn_for_default_summary_class
+            ret['summaryColumnNames'] = default_vocn_for_default_summary_class
         else:
-            ret['valOutColumnNames'] = ret['valAttrNames'] if ret['valAttrNames'] is not None else ()
+            ret['summaryColumnNames'] = ret['valAttrNames'] if ret['valAttrNames'] is not None else ()
 
     return ret
 
