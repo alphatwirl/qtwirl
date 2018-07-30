@@ -29,6 +29,8 @@ binning2 = MockBinning()
 
 ##__________________________________________________________________||
 @pytest.mark.parametrize('arg, expected', [
+
+    ## no key
     pytest.param(
         dict(),
         dict(
@@ -44,7 +46,87 @@ binning2 = MockBinning()
             sort=True,
             nevents=None,
         ),
-        id='empty'
+        id='no-key-empty-dict'
+    ),
+    pytest.param(
+        dict(keyAttrNames=( ), binnings=( )),
+        dict(
+            keyAttrNames=(),
+            keyIndices=None,
+            binnings=(),
+            keyOutColumnNames=(),
+            valAttrNames=None,
+            valIndices=None,
+            summaryClass=Count,
+            valOutColumnNames=('n', 'nvar'),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='no-key-empty-key'
+    ),
+
+    ## one key
+    pytest.param(
+        dict(
+            keyAttrNames='met_pt',
+        ),
+        dict(
+            keyAttrNames=('met_pt',),
+            keyIndices=None,
+            binnings=None,
+            keyOutColumnNames=('met_pt',),
+            valAttrNames=None,
+            valIndices=None,
+            summaryClass=Count,
+            valOutColumnNames=('n', 'nvar'),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='one-key-no-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames='met_pt',
+            binnings=binning1,
+        ),
+        dict(
+            keyAttrNames=('met_pt',),
+            keyIndices=None,
+            binnings=(binning1, ),
+            keyOutColumnNames=('met_pt',),
+            valAttrNames=None,
+            valIndices=None,
+            summaryClass=Count,
+            valOutColumnNames=('n', 'nvar'),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='one-key-one-bin-no-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames='met_pt',
+            keyIndices=1,
+            binnings=binning1,
+            keyOutColumnNames='met',
+        ),
+        dict(
+            keyAttrNames=('met_pt',),
+            keyIndices=(1, ),
+            binnings=(binning1, ),
+            keyOutColumnNames=('met',),
+            valAttrNames=None,
+            valIndices=None,
+            summaryClass=Count,
+            valOutColumnNames=('n', 'nvar'),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='one-key-idx-bin-out-no-tuple'
     ),
     pytest.param(
         dict(
@@ -64,28 +146,10 @@ binning2 = MockBinning()
             sort=True,
             nevents=None,
         ),
-        id='simple'
+        id='one-key-tuple'
     ),
-    pytest.param(
-        dict(
-            keyAttrNames=( ),
-            binnings=( )
-        ),
-        dict(
-            keyAttrNames=(),
-            keyIndices=None,
-            binnings=(),
-            keyOutColumnNames=(),
-            valAttrNames=None,
-            valIndices=None,
-            summaryClass=Count,
-            valOutColumnNames=('n', 'nvar'),
-            weight=defaultWeight,
-            sort=True,
-            nevents=None,
-        ),
-        id='empty-key'
-    ),
+
+    ##
     pytest.param(
         dict(
             keyAttrNames=( ),

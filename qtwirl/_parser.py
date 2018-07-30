@@ -52,12 +52,19 @@ def complete_table_cfg(cfg):
     ret = default_cfg
     ret.update(cfg)
 
-    use_default_summary_class = 'summaryClass' not in cfg
-
     ret['keyOutColumnNames'] = ret.get('keyOutColumnNames', ret['keyAttrNames'])
     # TODO: this line is not tested well. The following code also passes the tests
     # ret['keyOutColumnNames'] = ret.get('keyAttrNames', ret['keyAttrNames'])
 
+    if isinstance(ret['keyAttrNames'], str):
+        ret['keyAttrNames'] = (ret['keyAttrNames'], )
+        ret['keyOutColumnNames'] = (ret['keyOutColumnNames'], )
+        if ret['keyIndices'] is not None:
+            ret['keyIndices'] = (ret['keyIndices'], )
+        if ret['binnings'] is not None:
+            ret['binnings'] = (ret['binnings'], )
+
+    use_default_summary_class = 'summaryClass' not in cfg
     if 'valOutColumnNames' not in ret:
         if use_default_summary_class:
             ret['valOutColumnNames'] = default_vocn_for_default_summary_class
