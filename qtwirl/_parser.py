@@ -53,8 +53,6 @@ def complete_table_cfg(cfg):
     ret.update(cfg)
 
     ret['keyOutColumnNames'] = ret.get('keyOutColumnNames', ret['keyAttrNames'])
-    # TODO: this line is not tested well. The following code also passes the tests
-    # ret['keyOutColumnNames'] = ret.get('keyAttrNames', ret['keyAttrNames'])
 
     if isinstance(ret['keyAttrNames'], str):
         ret['keyAttrNames'] = (ret['keyAttrNames'], )
