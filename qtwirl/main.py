@@ -15,7 +15,7 @@ from alphatwirl.roottree.inspect import get_entries_in_tree_in_file
 from alphatwirl.loop.splitfuncs import create_files_start_length_list
 from alphatwirl.loop.merge import merge_in_order
 
-from ._parser import parse_file, parse_reader_cfg, _is_dict
+from ._parser import parse_file, parse_reader_cfg, complete_table_cfg, _is_dict
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']
@@ -93,10 +93,7 @@ def _create_reader_for_single_cfg(cfg):
 
 ##__________________________________________________________________||
 def create_reader_from_table_cfg(cfg):
-    cfg['outFile'] = cfg.get('outFile', False)
-    tableConfigCompleter = alphatwirl.configure.TableConfigCompleter(
-        defaultSummaryClass=alphatwirl.summary.Count)
-    cfg = tableConfigCompleter.complete(cfg)
+    cfg = complete_table_cfg(cfg)
     return build_counter(cfg)
 
 ##__________________________________________________________________||
