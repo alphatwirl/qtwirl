@@ -43,9 +43,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_n.txt',
-            outFilePath='./tbl_n.txt',
         ),
         id='empty'
     ),
@@ -66,9 +63,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_n.met_pt.txt',
-            outFilePath='./tbl_n.met_pt.txt',
         ),
         id='simple'
     ),
@@ -89,9 +83,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_n.txt',
-            outFilePath='./tbl_n.txt',
         ),
         id='empty-key'
     ),
@@ -113,9 +104,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_MockSummary2.txt',
-            outFilePath='./tbl_MockSummary2.txt',
         ),
         id='summary-class-empty-key-empty-val'
     ),
@@ -137,9 +125,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_MockSummary2.key1.key2.txt',
-            outFilePath='./tbl_MockSummary2.key1.key2.txt',
         ),
         id='summary-class-2-keys-empty-vals'
     ),
@@ -162,9 +147,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_MockSummary2.key1.key2.val1.val2.txt',
-            outFilePath='./tbl_MockSummary2.key1.key2.val1.val2.txt',
         ),
         id='summary-class-2-keys-2-vals'
     ),
@@ -188,9 +170,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_MockSummary2.key1.key2-1.val1.val2.txt',
-            outFilePath='./tbl_MockSummary2.key1.key2-1.val1.val2.txt',
         ),
         id='summary-class-2-keys-2-vals-key-indices'
     ),
@@ -214,9 +193,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_MockSummary2.key1.key2.val1-2.val2.txt',
-            outFilePath='./tbl_MockSummary2.key1.key2.val1-2.val2.txt',
         ),
         id='summary-class-2-keys-2-vals-val-indices'
     ),
@@ -241,9 +217,6 @@ binning2 = MockBinning()
             weight=defaultWeight,
             sort=True,
             nevents=None,
-            outFile=True,
-            outFileName='tbl_MockSummary2.key1.key2-1.val1-2.val2-3.txt',
-            outFilePath='./tbl_MockSummary2.key1.key2-1.val1-2.val2-3.txt',
         ),
         id='summary-class-2-keys-2-vals-key-indices-val-indices'
     ),
