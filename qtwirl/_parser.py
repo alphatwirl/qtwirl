@@ -64,6 +64,11 @@ def complete_table_cfg(cfg):
         if ret['binnings'] is not None:
             ret['binnings'] = (ret['binnings'], )
 
+    if isinstance(ret['valAttrNames'], str):
+        ret['valAttrNames'] = (ret['valAttrNames'], )
+        if ret['valIndices'] is not None:
+            ret['valIndices'] = (ret['valIndices'], )
+
     use_default_summary_class = 'summaryClass' not in cfg
     if 'valOutColumnNames' not in ret:
         if use_default_summary_class:

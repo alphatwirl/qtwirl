@@ -149,7 +149,7 @@ binning2 = MockBinning()
         id='one-key-tuple'
     ),
 
-    ##
+    ## summary class
     pytest.param(
         dict(
             keyAttrNames=( ),
@@ -190,7 +190,97 @@ binning2 = MockBinning()
             sort=True,
             nevents=None,
         ),
-        id='summary-class-2-keys-empty-vals'
+        id='summary-class-keys-empty-vals'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            binnings=(binning1, binning2),
+            valAttrNames=('val1', ),
+            summaryClass=MockSummary2,
+        ),
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            keyIndices=None,
+            binnings=(binning1, binning2),
+            keyOutColumnNames=('key1', 'key2'),
+            valAttrNames=('val1', ),
+            valIndices=None,
+            summaryClass=MockSummary2,
+            summaryColumnNames=('val1', ),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='summary-class-keys-one-val-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            binnings=(binning1, binning2),
+            valAttrNames=('val1', ),
+            valIndices=('*', ),
+            summaryClass=MockSummary2,
+        ),
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            keyIndices=None,
+            binnings=(binning1, binning2),
+            keyOutColumnNames=('key1', 'key2'),
+            valAttrNames=('val1', ),
+            valIndices=('*', ),
+            summaryClass=MockSummary2,
+            summaryColumnNames=('val1', ),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='summary-class-keys-one-val-idx-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            binnings=(binning1, binning2),
+            valAttrNames='val1',
+            summaryClass=MockSummary2,
+        ),
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            keyIndices=None,
+            binnings=(binning1, binning2),
+            keyOutColumnNames=('key1', 'key2'),
+            valAttrNames=('val1', ),
+            valIndices=None,
+            summaryClass=MockSummary2,
+            summaryColumnNames=('val1', ),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='summary-class-keys-one-val-no-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            binnings=(binning1, binning2),
+            valAttrNames='val1',
+            valIndices='*',
+            summaryClass=MockSummary2,
+        ),
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            keyIndices=None,
+            binnings=(binning1, binning2),
+            keyOutColumnNames=('key1', 'key2'),
+            valAttrNames=('val1', ),
+            valIndices=('*', ),
+            summaryClass=MockSummary2,
+            summaryColumnNames=('val1', ),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='summary-class-keys-one-val-idx-no-tuple'
     ),
     pytest.param(
         dict(
@@ -212,7 +302,7 @@ binning2 = MockBinning()
             sort=True,
             nevents=None,
         ),
-        id='summary-class-2-keys-2-vals'
+        id='summary-class-keys-2-vals'
     ),
     pytest.param(
         dict(
