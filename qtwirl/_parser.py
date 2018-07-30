@@ -32,8 +32,10 @@ def _wrap_table_cfg(cfg):
 ##__________________________________________________________________||
 def complete_table_cfg(cfg):
 
-    defaultSummaryClass = alphatwirl.summary.Count
-    defaultWeight = alphatwirl.summary.WeightCalculatorOne()
+    default_summary_class = alphatwirl.summary.Count
+    default_vocn_for_default_summary_class = ('n', 'nvar')
+
+    default_weight = alphatwirl.summary.WeightCalculatorOne()
 
     default_cfg = dict(
         keyAttrNames=( ),
@@ -41,8 +43,8 @@ def complete_table_cfg(cfg):
         binnings=None,
         valAttrNames=None,
         valIndices=None,
-        summaryClass=defaultSummaryClass,
-        weight=defaultWeight,
+        summaryClass=default_summary_class,
+        weight=default_weight,
         sort=True,
         nevents=None,
     )
@@ -50,15 +52,15 @@ def complete_table_cfg(cfg):
     ret = default_cfg
     ret.update(cfg)
 
-    use_defaultSummaryClass = 'summaryClass' not in cfg
+    use_default_summary_class = 'summaryClass' not in cfg
 
     ret['keyOutColumnNames'] = ret.get('keyOutColumnNames', ret['keyAttrNames'])
     # TODO: this line is not tested well. The following code also passes the tests
     # ret['keyOutColumnNames'] = ret.get('keyAttrNames', ret['keyAttrNames'])
 
     if 'valOutColumnNames' not in ret:
-        if use_defaultSummaryClass:
-            ret['valOutColumnNames'] = ('n', 'nvar')
+        if use_default_summary_class:
+            ret['valOutColumnNames'] = default_vocn_for_default_summary_class
         else:
             ret['valOutColumnNames'] = ret['valAttrNames'] if ret['valAttrNames'] is not None else ()
 
