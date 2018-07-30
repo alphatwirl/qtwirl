@@ -74,6 +74,9 @@ def complete_table_cfg(cfg):
         else:
             ret['summaryColumnNames'] = ret['valAttrNames'] if ret['valAttrNames'] is not None else ()
 
+    if isinstance(ret['summaryColumnNames'], str):
+        ret['summaryColumnNames'] = (ret['summaryColumnNames'], )
+
     return ret
 
 ##__________________________________________________________________||

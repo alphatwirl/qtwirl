@@ -241,6 +241,52 @@ binning2 = MockBinning()
         dict(
             keyAttrNames=('key1', 'key2'),
             binnings=(binning1, binning2),
+            valAttrNames=('val1', 'val2'),
+            summaryClass=MockSummary2,
+            summaryColumnNames=('agg1', ),
+        ),
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            keyIndices=None,
+            binnings=(binning1, binning2),
+            keyOutColumnNames=('key1', 'key2'),
+            valAttrNames=('val1', 'val2'),
+            valIndices=None,
+            summaryClass=MockSummary2,
+            summaryColumnNames=('agg1', ),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='summary-class-one-agg-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            binnings=(binning1, binning2),
+            valAttrNames=('val1', 'val2'),
+            summaryClass=MockSummary2,
+            summaryColumnNames='agg1',
+        ),
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            keyIndices=None,
+            binnings=(binning1, binning2),
+            keyOutColumnNames=('key1', 'key2'),
+            valAttrNames=('val1', 'val2'),
+            valIndices=None,
+            summaryClass=MockSummary2,
+            summaryColumnNames=('agg1', ),
+            weight=defaultWeight,
+            sort=True,
+            nevents=None,
+        ),
+        id='summary-class-one-agg-no-tuple'
+    ),
+    pytest.param(
+        dict(
+            keyAttrNames=('key1', 'key2'),
+            binnings=(binning1, binning2),
             valAttrNames='val1',
             summaryClass=MockSummary2,
         ),
