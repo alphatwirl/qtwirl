@@ -29,14 +29,35 @@ def qtwirl(file, reader_cfg,
            user_modules=(),
            max_events=-1, max_files=-1,
            max_events_per_process=-1, max_files_per_process=1):
-    """qtwirl (quick-twirl), a one-function interface to alphatwirl
+    """qtwirl (quick-twirl), one-function interface to alphatwirl
 
-    Args:
-        file:
-        reader_cfg:
+    Summarize event data in ``file`` in the way specified by
+    ``reader_cfg`` and return the results.
 
-    Returns:
-        a list of results of readers
+    Parameters
+    ----------
+    file : str or list of str
+        Input file path(s)
+    reader_cfg : dict or list of dict
+        Reader configuration
+    parallel_mode : str, optional
+        "multiprocessing" (default) or "htcondor"
+    dispatcher_options : dict, optional
+        Options to dispatcher
+    process : int, optional
+        The number of processes when ``parallel_mode`` is
+        "multiprocessing"
+    quiet : bool, optional
+    user_modules : list
+    max_events : int, optional
+    max_files : int, optional
+    max_events_per_process : int, optional
+    max_files_per_process : int, optional
+
+    Returns
+    -------
+    DataFrame or list of DataFrame
+        Summary of event data
 
     """
 
