@@ -119,14 +119,18 @@ def create_reader_from_table_cfg(cfg):
 
 ##__________________________________________________________________||
 def build_counter(tblcfg):
+    echo = alphatwirl.binning.Echo(nextFunc=None)
+    binnings = tblcfg['binnings']
+    if binnings:
+        binnings = tuple(b if b else echo for b in binnings)
     keyValComposer = alphatwirl.summary.KeyValueComposer(
         keyAttrNames=tblcfg['keyAttrNames'],
-        binnings=tblcfg['binnings'],
+        binnings=binnings,
         keyIndices=tblcfg['keyIndices'],
         valAttrNames=tblcfg['valAttrNames'],
         valIndices=tblcfg['valIndices']
     )
-    nextKeyComposer = alphatwirl.summary.NextKeyComposer(tblcfg['binnings']) if tblcfg['binnings'] is not None else None
+    nextKeyComposer = alphatwirl.summary.NextKeyComposer(binnings) if binnings is not None else None
     summarizer = alphatwirl.summary.Summarizer(
         Summary=tblcfg['summaryClass']
     )

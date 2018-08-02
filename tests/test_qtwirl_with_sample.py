@@ -78,6 +78,7 @@ def test_with_sample():
     tbl_paths = [
         os.path.join(tbl_dir, '01', 'tbl_n.jet_pt-w.txt'),
         os.path.join(tbl_dir, '01', 'tbl_n.met.txt'),
+        os.path.join(tbl_dir, '01', 'tbl_n.njets.met.txt'),
         os.path.join(tbl_dir, '01', 'tbl_n.ht.txt'),
     ]
     tbls = [pd.read_table(p, delim_whitespace=True) for p in tbl_paths]
@@ -93,6 +94,9 @@ def test_with_sample():
              keyOutColumnNames=('jet_pt', )),
         dict(keyAttrNames=('met', ),
              binnings=(RoundLog(0.1, 100), )),
+        dict(
+            keyAttrNames=('njets', 'met'),
+            binnings=(None, RoundLog(0.2, 100, min=50, underflow_bin=0))), # use None
         dict(reader=FuncOnNumpyArrays(
             src_arrays=['jet_pt'],
             out_name='ht',
@@ -110,9 +114,13 @@ def test_with_sample():
         max_events_per_process=500
     )
 
+    #
+    assert 4 == len(results)
+
     ##
     assert_frame_equal(tbls[0], results[0], check_names=True)
     assert_frame_equal(tbls[1], results[1], check_names=True, check_less_precise=True)
     assert_frame_equal(tbls[2], results[2], check_names=True)
+    assert_frame_equal(tbls[3], results[3], check_names=True)
 
 ##__________________________________________________________________||
