@@ -28,7 +28,8 @@ def qtwirl(file, reader_cfg,
            process=4, quiet=True,
            user_modules=(),
            max_events=-1, max_files=-1,
-           max_events_per_process=-1, max_files_per_process=1):
+           max_events_per_process=-1, max_files_per_process=1,
+           skip_error_files=True):
     """qtwirl (quick-twirl), one-function interface to alphatwirl
 
     Summarize event data in ``file`` in the way specified by
@@ -53,6 +54,7 @@ def qtwirl(file, reader_cfg,
     max_files : int, optional
     max_events_per_process : int, optional
     max_files_per_process : int, optional
+    skip_error_files, bool, default True
 
     Returns
     -------
@@ -76,7 +78,7 @@ def qtwirl(file, reader_cfg,
         tree_name=tree_name,
         max_events=max_events, max_events_per_run=max_events_per_process,
         max_files=max_files, max_files_per_run=max_files_per_process,
-        check_files=True, skip_error_files=True)
+        check_files=True, skip_error_files=skip_error_files)
     eventReader = EventReader(
         eventLoopRunner=eventLoopRunner,
         reader=reader,
@@ -155,7 +157,10 @@ def create_fileloaders(
         check_files=True, skip_error_files=False):
 
         func_get_nevents_in_file = functools.partial(
-            get_entries_in_tree_in_file, tree_name=tree_name)
+            get_entries_in_tree_in_file,
+            tree_name=tree_name,
+            raises=not skip_error_files
+        )
 
         files_start_length_list = create_files_start_length_list(
             files,
