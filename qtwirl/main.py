@@ -79,14 +79,13 @@ def qtwirl(file, reader_cfg,
         max_events=max_events, max_events_per_run=max_events_per_process,
         max_files=max_files, max_files_per_run=max_files_per_process,
         check_files=True, skip_error_files=skip_error_files)
-    eventReader = EventReader(
+    read_files = functools.partial(
+        let_reader_read, reader=reader,
         eventLoopRunner=eventLoopRunner,
-        reader=reader,
-        split_into_build_events=func_create_fileloaders,
-    )
+        func_split_into_build_events=func_create_fileloaders)
 
     parallel.begin()
-    ret = eventReader.read(files=files)
+    ret = read_files(files=files)
     parallel.end()
 
     if isinstance(reader, alphatwirl.loop.ReaderComposite):
@@ -194,56 +193,32 @@ def create_fileloaders(
         return ret
 
 ##__________________________________________________________________||
-class EventReader(object):
-    def __init__(self, eventLoopRunner, reader,
-                 split_into_build_events):
+def let_reader_read(files, reader, eventLoopRunner,
+                    func_split_into_build_events):
+    eventLoopRunner.begin()
 
-        self.eventLoopRunner = eventLoopRunner
-        self.reader = reader
-        self.split_into_build_events = split_into_build_events
+    build_events_list = func_split_into_build_events(files)
+    njobs = len(build_events_list)
+    eventLoops = [ ]
+    for i, build_events in enumerate(build_events_list):
+        reader_copy = copy.deepcopy(reader)
+        eventLoop = alphatwirl.loop.EventLoop(build_events, reader_copy, '{} / {}'.format(i, njobs))
+        eventLoops.append(eventLoop)
+    runids = eventLoopRunner.run_multiple(eventLoops)
+    # e.g., [0, 1, 2]
 
-        self.EventLoop = alphatwirl.loop.EventLoop
+    runid_reader_map = collections.OrderedDict([(i, None) for i in runids])
+    # e.g., OrderedDict([(0, None), (1, None), (2, None)])
 
-        self.runids = [ ]
+    runids_towait = runids[:]
+    while runids_towait:
+        runid, reader_returned = eventLoopRunner.receive_one()
+        merge_in_order(runid_reader_map, runid, reader_returned)
+        runids_towait.remove(runid)
 
-        name_value_pairs = (
-            ('eventLoopRunner', self.eventLoopRunner),
-            ('reader', self.reader),
-            ('split_into_build_events', self.split_into_build_events),
-        )
-        self._repr = '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(['{}={!r}'.format(n, v) for n, v in name_value_pairs]),
-        )
-
-    def __repr__(self):
-        return self._repr
-
-    def read(self, files):
-        self.eventLoopRunner.begin()
-
-        build_events_list = self.split_into_build_events(files)
-        njobs = len(build_events_list)
-        eventLoops = [ ]
-        for i, build_events in enumerate(build_events_list):
-            reader = copy.deepcopy(self.reader)
-            eventLoop = self.EventLoop(build_events, reader, '{} / {}'.format(i, njobs))
-            eventLoops.append(eventLoop)
-        runids = self.eventLoopRunner.run_multiple(eventLoops)
-        # e.g., [0, 1, 2]
-
-        runid_reader_map = collections.OrderedDict([(i, None) for i in runids])
-        # e.g., OrderedDict([(0, None), (1, None), (2, None)])
-
-        runids_towait = runids[:]
-        while runids_towait:
-            runid, reader = self.eventLoopRunner.receive_one()
-            merge_in_order(runid_reader_map, runid, reader)
-            runids_towait.remove(runid)
-
-        # assert 1 == len(runid_reader_map)
-        reader = list(runid_reader_map.values())[0]
-        return reader.collect()
+    # assert 1 == len(runid_reader_map)
+    reader = list(runid_reader_map.values())[0]
+    return reader.collect()
 
 ##__________________________________________________________________||
 class Collector(object):
