@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.03.4...master))
+- refactored code in main.py
 - updated README.md
 - added CHANGELOG.md
 
