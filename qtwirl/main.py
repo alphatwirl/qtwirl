@@ -73,8 +73,8 @@ def qtwirl(file, reader_cfg,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
     eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
-    func_create_fileloaders = functools.partial(
-        create_fileloaders,
+    func_create_file_loaders = functools.partial(
+        create_file_loaders,
         tree_name=tree_name,
         max_events=max_events, max_events_per_run=max_events_per_process,
         max_files=max_files, max_files_per_run=max_files_per_process,
@@ -82,7 +82,7 @@ def qtwirl(file, reader_cfg,
     read_files = functools.partial(
         let_reader_read, reader=reader,
         eventLoopRunner=eventLoopRunner,
-        func_split_into_build_events=func_create_fileloaders)
+        func_create_file_loaders=func_create_file_loaders)
 
     parallel.begin()
     ret = read_files(files=files)
@@ -149,7 +149,7 @@ def build_counter(tblcfg):
     return reader
 
 ##__________________________________________________________________||
-def create_fileloaders(
+def create_file_loaders(
         files, tree_name,
         max_events=-1, max_events_per_run=-1,
         max_files=-1, max_files_per_run=1,
@@ -194,15 +194,15 @@ def create_fileloaders(
 
 ##__________________________________________________________________||
 def let_reader_read(files, reader, eventLoopRunner,
-                    func_split_into_build_events):
+                    func_create_file_loaders):
     eventLoopRunner.begin()
 
-    build_events_list = func_split_into_build_events(files)
-    njobs = len(build_events_list)
+    file_loaders = func_create_file_loaders(files)
+    njobs = len(file_loaders)
     eventLoops = [ ]
-    for i, build_events in enumerate(build_events_list):
+    for i, file_loader in enumerate(file_loaders):
         reader_copy = copy.deepcopy(reader)
-        eventLoop = alphatwirl.loop.EventLoop(build_events, reader_copy, '{} / {}'.format(i, njobs))
+        eventLoop = alphatwirl.loop.EventLoop(file_loader, reader_copy, '{} / {}'.format(i, njobs))
         eventLoops.append(eventLoop)
     runids = eventLoopRunner.run_multiple(eventLoops)
     # e.g., [0, 1, 2]
