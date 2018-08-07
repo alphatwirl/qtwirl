@@ -67,6 +67,12 @@ def qtwirl(file, reader_cfg,
 
     reader = create_reader(reader_cfg)
 
+    ##
+    default_user_modules = ('qtwirl', 'alphatwirl')
+    user_modules = set(user_modules)
+    user_modules.update(default_user_modules)
+
+    ##
     parallel = alphatwirl.parallel.build_parallel(
         parallel_mode=parallel_mode, quiet=quiet,
         processes=process,
