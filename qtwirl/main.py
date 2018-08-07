@@ -24,9 +24,9 @@ __all__ = ['qtwirl']
 def qtwirl(file, reader_cfg,
            tree_name=None,
            parallel_mode='multiprocessing',
-           dispatcher_options=dict(),
+           dispatcher_options=None,
            process=4, quiet=True,
-           user_modules=(),
+           user_modules=None,
            max_events=-1, max_files=-1,
            max_events_per_process=-1, max_files_per_process=1,
            skip_error_files=True):
@@ -72,7 +72,14 @@ def qtwirl(file, reader_cfg,
     reader = create_reader(reader_cfg)
 
     ##
+    if dispatcher_options is None:
+        dispatcher_options=dict()
+
+
+    ##
     default_user_modules = ('qtwirl', 'alphatwirl')
+    if user_modules is None:
+        user_modules = ()
     user_modules = set(user_modules)
     user_modules.update(default_user_modules)
 
