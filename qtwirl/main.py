@@ -49,7 +49,9 @@ def qtwirl(file, reader_cfg,
         The number of processes when ``parallel_mode`` is
         "multiprocessing"
     quiet : bool, optional
-    user_modules : list
+    user_modules : list, optional
+        The names of modules to be sent to worker nodes when
+        parallel_mode is "htcondor"
     max_events : int, optional
     max_files : int, optional
     max_events_per_process : int, optional
@@ -63,8 +65,10 @@ def qtwirl(file, reader_cfg,
 
     """
 
+    ##
     files = parse_file(file)
 
+    ##
     reader = create_reader(reader_cfg)
 
     ##
