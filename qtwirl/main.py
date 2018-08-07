@@ -72,7 +72,6 @@ def qtwirl(file, reader_cfg,
         processes=process,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
-    eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
     func_create_file_loaders = functools.partial(
         create_file_loaders,
         tree_name=tree_name,
@@ -80,8 +79,7 @@ def qtwirl(file, reader_cfg,
         max_files=max_files, max_files_per_run=max_files_per_process,
         check_files=True, skip_error_files=skip_error_files)
     read_files = functools.partial(
-        let_reader_read, reader=reader,
-        eventLoopRunner=eventLoopRunner,
+        let_reader_read, reader=reader, parallel=parallel,
         func_create_file_loaders=func_create_file_loaders)
 
     parallel.begin()
@@ -193,8 +191,8 @@ def create_file_loaders(
         return ret
 
 ##__________________________________________________________________||
-def let_reader_read(files, reader, eventLoopRunner,
-                    func_create_file_loaders):
+def let_reader_read(files, reader, parallel, func_create_file_loaders):
+    eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
     eventLoopRunner.begin()
 
     file_loaders = func_create_file_loaders(files)
