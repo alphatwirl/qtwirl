@@ -150,13 +150,12 @@ def build_counter(tblcfg):
     summarizer = alphatwirl.summary.Summarizer(
         Summary=tblcfg['summaryClass']
     )
-    collector = Collector(
-        summaryColumnNames=tblcfg['keyOutColumnNames'] + tblcfg['summaryColumnNames']
-    )
     reader = alphatwirl.summary.Reader(
         keyValComposer=keyValComposer,
         summarizer=summarizer,
-        collector=collector,
+        collector=functools.partial(
+            collect_results_into_dataframe,
+            columns=tblcfg['keyOutColumnNames'] + tblcfg['summaryColumnNames']),
         nextKeyComposer=nextKeyComposer,
         weightCalculator=tblcfg['weight'],
         nevents=tblcfg['nevents']
@@ -236,32 +235,19 @@ def let_reader_read(files, reader, parallel, func_create_file_loaders):
     return reader.collect()
 
 ##__________________________________________________________________||
-class Collector(object):
-    def __init__(self, summaryColumnNames):
-        self.summaryColumnNames = summaryColumnNames
+def collect_results_into_dataframe(reader, columns):
+    tuple_list = reader.summarizer.to_tuple_list()
+    # e.g.,
+    # ret = [
+    #         (200, 2, 120, 240),
+    #         (300, 2, 490, 980),
+    #         (300, 3, 210, 420)
+    #         (300, 2, 20, 40),
+    #         (300, 3, 15, 30)
+    # ]
 
-    def __repr__(self):
-        name_value_pairs = (
-            ('summaryColumnNames', self.summaryColumnNames),
-        )
-        return '{}({})'.format(
-            self.__class__.__name__,
-            ', '.join(['{} = {!r}'.format(n, v) for n, v in name_value_pairs]),
-        )
-
-    def __call__(self, reader):
-        tuple_list = reader.summarizer.to_tuple_list()
-        # e.g.,
-        # ret = [
-        #         (200, 2, 120, 240),
-        #         (300, 2, 490, 980),
-        #         (300, 3, 210, 420)
-        #         (300, 2, 20, 40),
-        #         (300, 3, 15, 30)
-        # ]
-
-        if tuple_list is None:
-            return None
-        return pd.DataFrame(tuple_list, columns=self.summaryColumnNames)
+    if tuple_list is None:
+        return None
+    return pd.DataFrame(tuple_list, columns=columns)
 
 ##__________________________________________________________________||
