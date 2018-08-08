@@ -9,6 +9,8 @@
       (was mutable default)
     - default of `user_modules` is now `None` not an empty tuple
 - refactored code in main.py
+- added a check for empty input (e.g., all files are zombie)
+    - return a list of empty data frames (was raising exception)
 - updated README.md
 - added CHANGELOG.md
 
