@@ -230,8 +230,9 @@ def let_reader_read(files, reader, parallel, func_create_file_loaders):
         merge_in_order(runid_reader_map, runid, reader_returned)
         runids_towait.remove(runid)
 
-    # assert 1 == len(runid_reader_map)
-    reader = list(runid_reader_map.values())[0]
+    if runid_reader_map:
+        # assert 1 == len(runid_reader_map)
+        reader = list(runid_reader_map.values())[0]
     return reader.collect()
 
 ##__________________________________________________________________||
