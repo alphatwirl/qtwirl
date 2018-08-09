@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.03.4...master))
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.04.0...master))
+
+## [0.04.0] - 2018-08-09
+
+**PyPI**: https://pypi.org/project/qtwirl/0.4.0/
+
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.03.4...v0.04.0))
 - changed options to `qtwirl()`
     - no longer necessary to give `"qtwirl"` to `user_modules`
     - default of `dispatcher_options` is now `None` not an empty dict
