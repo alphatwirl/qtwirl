@@ -30,7 +30,7 @@ selection_cfg_str = 'ev: ev.njets[0] > 4'
 scribbler1 = mock.Mock()
 
 ##__________________________________________________________________||
-@pytest.mark.parametrize('arg, expected', [
+params = [
     pytest.param(
         dict(), dict(table_cfg=dict()), id='empty-dict'
     ),
@@ -125,11 +125,10 @@ scribbler1 = mock.Mock()
         ],
         id='one-scribbler-one-table'
     ),
-])
+]
+
+@pytest.mark.parametrize('arg, expected', params)
 def test_parse_reader_cfg(arg, expected):
-    # reader
-    # selection_cfg
-    # table_cfg
     assert expected == parse_reader_cfg(arg)
 
 ##__________________________________________________________________||
