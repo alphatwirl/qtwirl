@@ -5,7 +5,7 @@ import alphatwirl
 def complete_table_cfg(cfg):
 
     default_agg_class = alphatwirl.summary.Count
-    default_vocn_for_default_agg_class = ('n', 'nvar')
+    default_agg_name_for_default_agg_class = ('n', 'nvar')
 
     default_weight = alphatwirl.summary.WeightCalculatorOne()
 
@@ -42,7 +42,7 @@ def complete_table_cfg(cfg):
     use_default_agg_class = 'agg_class' not in cfg
     if 'agg_name' not in ret:
         if use_default_agg_class:
-            ret['agg_name'] = default_vocn_for_default_agg_class
+            ret['agg_name'] = default_agg_name_for_default_agg_class
         else:
             ret['agg_name'] = ret['val_name'] if ret['val_name'] is not None else ()
 
