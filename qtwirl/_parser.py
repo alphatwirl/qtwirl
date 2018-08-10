@@ -13,21 +13,41 @@ def parse_file(file):
 ##__________________________________________________________________||
 def parse_reader_cfg(reader_cfg):
 
+    if reader_cfg is None:
+        return None
+
     if _is_dict(reader_cfg):
         reader_cfg = _wrap_table_cfg(reader_cfg)
         key, val = list(reader_cfg.items())[0]
         if key == 'table_cfg':
             reader_cfg[key] = complete_table_cfg(val)
+        elif key == 'reader':
+            flattened = flatten_reader(val)
+            if not flattened:
+                reader_cfg = None
+            else:
+                reader_cfg = flattened
         return reader_cfg
 
+    reader_cfg = [c for c in reader_cfg if c is not None]
     reader_cfg = [_wrap_table_cfg(c) for c in reader_cfg]
+    ret = [ ]
     for c in reader_cfg:
         key, val = list(c.items())[0]
         if key == 'table_cfg':
-            c[key] = complete_table_cfg(val)
+            ret.append(dict(table_cfg=complete_table_cfg(val)))
+        elif key == 'reader':
+            flattened = flatten_reader(val)
+            if isinstance(flattened, list):
+                ret.extend(flattened)
+            else:
+                ret.append(flattened)
+        else:
+            ret.append(c)
 
-    return reader_cfg
+    return ret
 
+##__________________________________________________________________||
 def _wrap_table_cfg(cfg):
     config_keys = ('table_cfg', 'selection_cfg', 'reader')
     default_config_key = 'table_cfg'
@@ -36,6 +56,12 @@ def _wrap_table_cfg(cfg):
         return cfg
 
     return {default_config_key: cfg}
+
+##__________________________________________________________________||
+def flatten_reader(reader):
+    if isinstance(reader, list) or isinstance(reader, tuple):
+        return [dict(reader=r) for r in reader if r is not None]
+    return dict(reader=reader)
 
 ##__________________________________________________________________||
 def complete_table_cfg(cfg):
