@@ -55,11 +55,14 @@ def complete_table_cfg(cfg):
 def compose_tbl_filename(tblcfg, prefix='tbl', suffix='txt',
                          var_separator='.', idx_separator='-'):
 
-    if not columnNames:
+    key_out_name = tblcfg['key_out_name']
+    key_index = tblcfg.get('key_index', None)
+
+    if not key_out_name:
         return prefix + '.' + suffix # e.g. "tbl_n_component.txt"
 
-    if indices is None:
-        colidxs = columnNames
+    if key_index is None:
+        colidxs = key_out_name
         # e.g., ('var1', 'var2', 'var3'),
 
         middle = var_separator.join(colidxs)
@@ -71,10 +74,10 @@ def compose_tbl_filename(tblcfg, prefix='tbl', suffix='txt',
         return ret
 
     # e.g.,
-    # columnNames = ('var1', 'var2', 'var3', 'var4', 'var5'),
-    # indices = (1, None, '*', '(*)', '\\1')
+    # key_out_name = ('var1', 'var2', 'var3', 'var4', 'var5'),
+    # key_index = (1, None, '*', '(*)', '\\1')
 
-    idx_str = indices
+    idx_str = key_index
     # e.g., (1, None, '*', '(*)', '\\1')
 
     idx_str = ['w' if i == '*' else i for i in idx_str]
@@ -89,7 +92,7 @@ def compose_tbl_filename(tblcfg, prefix='tbl', suffix='txt',
     idx_str = ['' if i is None else '{}{}'.format(idx_separator, i) for i in idx_str]
     # e.g., ['-1', '', '-w', '-wp', '-b1']
 
-    colidxs = [n + i for n, i in zip(columnNames, idx_str)]
+    colidxs = [n + i for n, i in zip(key_out_name, idx_str)]
     # e.g., ['var1-1', 'var2', 'var3-w', 'var4-wp', 'var5-b1']
 
     middle = var_separator.join(colidxs)
