@@ -130,7 +130,6 @@ def _create_reader_for_single_cfg(cfg):
 
 ##__________________________________________________________________||
 def create_reader_from_table_cfg(cfg):
-    cfg = complete_table_cfg(cfg)
     return build_counter(cfg)
 
 ##__________________________________________________________________||

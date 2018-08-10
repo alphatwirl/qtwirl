@@ -14,11 +14,19 @@ def parse_file(file):
 def parse_reader_cfg(reader_cfg):
 
     if _is_dict(reader_cfg):
-        return _wrap_table_cfg(reader_cfg)
+        reader_cfg = _wrap_table_cfg(reader_cfg)
+        key, val = list(reader_cfg.items())[0]
+        if key == 'table_cfg':
+            reader_cfg[key] = complete_table_cfg(val)
+        return reader_cfg
 
-    ret = [_wrap_table_cfg(c) for c in reader_cfg]
+    reader_cfg = [_wrap_table_cfg(c) for c in reader_cfg]
+    for c in reader_cfg:
+        key, val = list(c.items())[0]
+        if key == 'table_cfg':
+            c[key] = complete_table_cfg(val)
 
-    return ret
+    return reader_cfg
 
 def _wrap_table_cfg(cfg):
     config_keys = ('table_cfg', 'selection_cfg', 'reader')
