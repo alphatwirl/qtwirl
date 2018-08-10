@@ -17,8 +17,7 @@ def parse_reader_cfg(reader_cfg):
         return None
 
     if _is_dict(reader_cfg):
-        cfg = _wrap_table_cfg(reader_cfg)
-        cfg = _expand_cfg(cfg)
+        cfg = _expand_cfg(reader_cfg)
         if not cfg:
             return None
         else:
@@ -30,7 +29,6 @@ def parse_reader_cfg(reader_cfg):
     for cfg in reader_cfg:
         if cfg is None:
             continue
-        cfg = _wrap_table_cfg(cfg)
         cfg = _expand_cfg(cfg)
         if isinstance(cfg, list):
             ret.extend(cfg)
@@ -40,7 +38,10 @@ def parse_reader_cfg(reader_cfg):
     return ret
 
 def _expand_cfg(cfg):
-    # cfg: a dict with one item
+
+    cfg = _wrap_table_cfg(cfg)
+    # cfg is a dict with one item
+
     key, val = list(cfg.items())[0]
     if key == 'table_cfg':
         return dict(table_cfg=complete_table_cfg(val))
