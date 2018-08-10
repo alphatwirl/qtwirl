@@ -32,18 +32,18 @@ def _wrap_table_cfg(cfg):
 ##__________________________________________________________________||
 def complete_table_cfg(cfg):
 
-    default_summary_class = alphatwirl.summary.Count
-    default_vocn_for_default_summary_class = ('n', 'nvar')
+    default_agg_class = alphatwirl.summary.Count
+    default_vocn_for_default_agg_class = ('n', 'nvar')
 
     default_weight = alphatwirl.summary.WeightCalculatorOne()
 
     default_cfg = dict(
-        keyAttrNames=( ),
-        keyIndices=None,
-        binnings=None,
-        valAttrNames=None,
-        valIndices=None,
-        summaryClass=default_summary_class,
+        key_name=( ),
+        key_index=None,
+        key_binning=None,
+        val_name=None,
+        val_index=None,
+        agg_class=default_agg_class,
         weight=default_weight,
         sort=True,
         nevents=None,
@@ -52,30 +52,30 @@ def complete_table_cfg(cfg):
     ret = default_cfg
     ret.update(cfg)
 
-    ret['keyOutColumnNames'] = ret.get('keyOutColumnNames', ret['keyAttrNames'])
+    ret['key_out_name'] = ret.get('key_out_name', ret['key_name'])
 
-    if isinstance(ret['keyAttrNames'], str):
-        ret['keyAttrNames'] = (ret['keyAttrNames'], )
-        ret['keyOutColumnNames'] = (ret['keyOutColumnNames'], )
-        if ret['keyIndices'] is not None:
-            ret['keyIndices'] = (ret['keyIndices'], )
-        if ret['binnings'] is not None:
-            ret['binnings'] = (ret['binnings'], )
+    if isinstance(ret['key_name'], str):
+        ret['key_name'] = (ret['key_name'], )
+        ret['key_out_name'] = (ret['key_out_name'], )
+        if ret['key_index'] is not None:
+            ret['key_index'] = (ret['key_index'], )
+        if ret['key_binning'] is not None:
+            ret['key_binning'] = (ret['key_binning'], )
 
-    if isinstance(ret['valAttrNames'], str):
-        ret['valAttrNames'] = (ret['valAttrNames'], )
-        if ret['valIndices'] is not None:
-            ret['valIndices'] = (ret['valIndices'], )
+    if isinstance(ret['val_name'], str):
+        ret['val_name'] = (ret['val_name'], )
+        if ret['val_index'] is not None:
+            ret['val_index'] = (ret['val_index'], )
 
-    use_default_summary_class = 'summaryClass' not in cfg
-    if 'summaryColumnNames' not in ret:
-        if use_default_summary_class:
-            ret['summaryColumnNames'] = default_vocn_for_default_summary_class
+    use_default_agg_class = 'agg_class' not in cfg
+    if 'agg_name' not in ret:
+        if use_default_agg_class:
+            ret['agg_name'] = default_vocn_for_default_agg_class
         else:
-            ret['summaryColumnNames'] = ret['valAttrNames'] if ret['valAttrNames'] is not None else ()
+            ret['agg_name'] = ret['val_name'] if ret['val_name'] is not None else ()
 
-    if isinstance(ret['summaryColumnNames'], str):
-        ret['summaryColumnNames'] = (ret['summaryColumnNames'], )
+    if isinstance(ret['agg_name'], str):
+        ret['agg_name'] = (ret['agg_name'], )
 
     return ret
 

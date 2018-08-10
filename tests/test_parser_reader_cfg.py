@@ -14,14 +14,14 @@ from qtwirl._parser import parse_reader_cfg
 RoundLog = mock.Mock()
 
 tblcfg_dict1 = dict(
-    keyAttrNames=('jet_pt', ),
-    binnings=(RoundLog(0.1, 100), ),
-    keyIndices=('*', ),
+    key_name=('jet_pt', ),
+    key_binning=(RoundLog(0.1, 100), ),
+    key_index=('*', ),
 )
 
 tblcfg_dict2 = dict(
-    keyAttrNames=('met', ),
-    binnings=(RoundLog(0.1, 100), ),
+    key_name=('met', ),
+    key_binning=(RoundLog(0.1, 100), ),
 )
 
 selection_cfg_dict = dict(All=('ev: ev.njets[0] > 4', ))

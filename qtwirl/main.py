@@ -136,26 +136,26 @@ def create_reader_from_table_cfg(cfg):
 ##__________________________________________________________________||
 def build_counter(tblcfg):
     echo = alphatwirl.binning.Echo(nextFunc=None)
-    binnings = tblcfg['binnings']
+    binnings = tblcfg['key_binning']
     if binnings:
         binnings = tuple(b if b else echo for b in binnings)
     keyValComposer = alphatwirl.summary.KeyValueComposer(
-        keyAttrNames=tblcfg['keyAttrNames'],
+        keyAttrNames=tblcfg['key_name'],
         binnings=binnings,
-        keyIndices=tblcfg['keyIndices'],
-        valAttrNames=tblcfg['valAttrNames'],
-        valIndices=tblcfg['valIndices']
+        keyIndices=tblcfg['key_index'],
+        valAttrNames=tblcfg['val_name'],
+        valIndices=tblcfg['val_index']
     )
     nextKeyComposer = alphatwirl.summary.NextKeyComposer(binnings) if binnings is not None else None
     summarizer = alphatwirl.summary.Summarizer(
-        Summary=tblcfg['summaryClass']
+        Summary=tblcfg['agg_class']
     )
     reader = alphatwirl.summary.Reader(
         keyValComposer=keyValComposer,
         summarizer=summarizer,
         collector=functools.partial(
             collect_results_into_dataframe,
-            columns=tblcfg['keyOutColumnNames'] + tblcfg['summaryColumnNames']),
+            columns=tblcfg['key_out_name'] + tblcfg['agg_name']),
         nextKeyComposer=nextKeyComposer,
         weightCalculator=tblcfg['weight'],
         nevents=tblcfg['nevents']

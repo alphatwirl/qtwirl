@@ -43,10 +43,10 @@ def test_with_sample_one_dict():
     ##
     RoundLog = alphatwirl.binning.RoundLog
     reader_cfg = dict(
-        keyAttrNames=('jet_pt', ),
-        binnings=(RoundLog(0.1, 100), ),
-        keyIndices=('*', ),
-        keyOutColumnNames=('jet_pt', ))
+        key_name=('jet_pt', ),
+        key_binning=(RoundLog(0.1, 100), ),
+        key_index=('*', ),
+        key_out_name=('jet_pt', ))
 
     results = qtwirl(
         file=sample_paths,
@@ -88,21 +88,21 @@ def test_with_sample():
     from scribblers.essentials import FuncOnNumpyArrays
     reader_cfg = [
         dict(selection_cfg=dict(All=('ev: ev.njets[0] > 4', ))),
-        dict(keyAttrNames=('jet_pt', ),
-             binnings=(RoundLog(0.1, 100), ),
-             keyIndices=('*', ),
-             keyOutColumnNames=('jet_pt', )),
-        dict(keyAttrNames=('met', ),
-             binnings=(RoundLog(0.1, 100), )),
+        dict(key_name=('jet_pt', ),
+             key_binning=(RoundLog(0.1, 100), ),
+             key_index=('*', ),
+             key_out_name=('jet_pt', )),
+        dict(key_name=('met', ),
+             key_binning=(RoundLog(0.1, 100), )),
         dict(
-            keyAttrNames=('njets', 'met'),
-            binnings=(None, RoundLog(0.2, 100, min=50, underflow_bin=0))), # use None
+            key_name=('njets', 'met'),
+            key_binning=(None, RoundLog(0.2, 100, min=50, underflow_bin=0))), # use None
         dict(reader=FuncOnNumpyArrays(
             src_arrays=['jet_pt'],
             out_name='ht',
             func=np.sum)),
-        dict(keyAttrNames=('ht', ),
-             binnings=(RoundLog(0.1, 100), )),
+        dict(key_name=('ht', ),
+             key_binning=(RoundLog(0.1, 100), )),
     ]
 
     results = qtwirl(
