@@ -17,35 +17,36 @@ def parse_reader_cfg(reader_cfg):
         return None
 
     if _is_dict(reader_cfg):
-        reader_cfg = _wrap_table_cfg(reader_cfg)
-        key, val = list(reader_cfg.items())[0]
-        if key == 'table_cfg':
-            reader_cfg[key] = complete_table_cfg(val)
-        elif key == 'reader':
-            flattened = flatten_reader(val)
-            if not flattened:
-                reader_cfg = None
-            else:
-                reader_cfg = flattened
-        return reader_cfg
-
-    reader_cfg = [c for c in reader_cfg if c is not None]
-    reader_cfg = [_wrap_table_cfg(c) for c in reader_cfg]
-    ret = [ ]
-    for c in reader_cfg:
-        key, val = list(c.items())[0]
-        if key == 'table_cfg':
-            ret.append(dict(table_cfg=complete_table_cfg(val)))
-        elif key == 'reader':
-            flattened = flatten_reader(val)
-            if isinstance(flattened, list):
-                ret.extend(flattened)
-            else:
-                ret.append(flattened)
+        cfg = _wrap_table_cfg(reader_cfg)
+        cfg = _expand_cfg(cfg)
+        if not cfg:
+            return None
         else:
-            ret.append(c)
+            return cfg
+
+    # reader_cfg is a list
+
+    ret = [ ]
+    for cfg in reader_cfg:
+        if cfg is None:
+            continue
+        cfg = _wrap_table_cfg(cfg)
+        cfg = _expand_cfg(cfg)
+        if isinstance(cfg, list):
+            ret.extend(cfg)
+        else:
+            ret.append(cfg)
 
     return ret
+
+def _expand_cfg(cfg):
+    # cfg: a dict with one item
+    key, val = list(cfg.items())[0]
+    if key == 'table_cfg':
+        return dict(table_cfg=complete_table_cfg(val))
+    elif key == 'reader':
+        return flatten_reader(val)
+    return cfg
 
 ##__________________________________________________________________||
 def _wrap_table_cfg(cfg):
