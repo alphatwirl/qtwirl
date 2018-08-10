@@ -52,3 +52,52 @@ def complete_table_cfg(cfg):
     return ret
 
 ##__________________________________________________________________||
+def compose_tbl_filename(tblcfg, prefix='tbl', suffix='txt',
+                         var_separator='.', idx_separator='-'):
+
+    if not columnNames:
+        return prefix + '.' + suffix # e.g. "tbl_n_component.txt"
+
+    if indices is None:
+        colidxs = columnNames
+        # e.g., ('var1', 'var2', 'var3'),
+
+        middle = var_separator.join(colidxs)
+        # e.g., 'var1.var2.var3'
+
+        ret = prefix + var_separator + middle + '.' + suffix
+        # e.g., 'tbl_n_component.var1.var2.var3.txt'
+
+        return ret
+
+    # e.g.,
+    # columnNames = ('var1', 'var2', 'var3', 'var4', 'var5'),
+    # indices = (1, None, '*', '(*)', '\\1')
+
+    idx_str = indices
+    # e.g., (1, None, '*', '(*)', '\\1')
+
+    idx_str = ['w' if i == '*' else i for i in idx_str]
+    # e..g, [1, None, 'w', '(*)', '\\1']
+
+    idx_str = ['wp' if i == '(*)' else i for i in idx_str]
+    # e.g., [1, None, 'w', 'wp', '\\1']
+
+    idx_str = ['b{}'.format(i[1:]) if isinstance(i, str) and i.startswith('\\') else i for i in idx_str]
+    # e.g., [1, None, 'w', 'wp', 'b1']
+
+    idx_str = ['' if i is None else '{}{}'.format(idx_separator, i) for i in idx_str]
+    # e.g., ['-1', '', '-w', '-wp', '-b1']
+
+    colidxs = [n + i for n, i in zip(columnNames, idx_str)]
+    # e.g., ['var1-1', 'var2', 'var3-w', 'var4-wp', 'var5-b1']
+
+    middle = var_separator.join(colidxs)
+    # e.g., 'var1-1.var2.var3-w.var4-wp.var5-b1'
+
+    ret =  prefix + var_separator + middle + '.' + suffix
+    # e.g., tbl_n_component.var1-1.var2.var3-w.var4-wp.var5-b1.txt
+
+    return ret
+
+##__________________________________________________________________||
