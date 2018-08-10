@@ -6,7 +6,7 @@ try:
 except ImportError:
     import mock
 
-from qtwirl._parser import complete_table_cfg
+from qtwirl._tblcfg import complete_table_cfg
 
 from alphatwirl.summary import Count, WeightCalculatorOne
 
