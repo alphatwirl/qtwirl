@@ -15,7 +15,8 @@ from alphatwirl.roottree.inspect import get_entries_in_tree_in_file
 from alphatwirl.loop.splitfuncs import create_files_start_length_list
 from alphatwirl.loop.merge import merge_in_order
 
-from ._parser import parse_file, parse_reader_cfg, _is_dict
+from ._misc import is_dict
+from ._parser import parse_file, parse_reader_cfg
 from ._tblcfg import complete_table_cfg
 
 ##__________________________________________________________________||
@@ -111,7 +112,7 @@ def qtwirl(file, reader_cfg,
 ##__________________________________________________________________||
 def create_reader(cfg):
     cfg = parse_reader_cfg(cfg)
-    if _is_dict(cfg):
+    if is_dict(cfg):
         return _create_reader_for_single_cfg(cfg)
     readers = [_create_reader_for_single_cfg(c) for c in cfg]
     ret = alphatwirl.loop.ReaderComposite(readers=readers)

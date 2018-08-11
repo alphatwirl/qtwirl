@@ -1,5 +1,6 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 
+from ._misc import is_dict
 from ._tblcfg import complete_table_cfg
 
 ##__________________________________________________________________||
@@ -16,7 +17,7 @@ def parse_reader_cfg(reader_cfg):
     if reader_cfg is None:
         return None
 
-    if _is_dict(reader_cfg):
+    if is_dict(reader_cfg):
         cfg = _expand_cfg(reader_cfg)
         if not cfg:
             return None
@@ -64,18 +65,5 @@ def flatten_reader(reader):
     if isinstance(reader, list) or isinstance(reader, tuple):
         return [dict(reader=r) for r in reader if r is not None]
     return dict(reader=reader)
-
-##__________________________________________________________________||
-def _is_dict(obj):
-    try:
-        # check for mixin methods of mapping
-        # https://docs.python.org/3.6/library/collections.abc.html
-        obj.keys()
-        obj.items()
-        obj.values()
-    except AttributeError:
-        return False
-
-    return True
 
 ##__________________________________________________________________||
