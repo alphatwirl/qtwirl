@@ -17,7 +17,6 @@ from alphatwirl.loop.merge import merge_in_order
 
 from ._misc import is_dict
 from ._parser import parse_file, parse_reader_cfg
-from ._tblcfg import complete_table_cfg
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']
