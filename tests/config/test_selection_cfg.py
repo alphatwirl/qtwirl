@@ -1,7 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import pytest
 
-from qtwirl._selcfg import complete_selection_cfg
+from qtwirl._parser._selcfg import complete_selection_cfg
 
 ##__________________________________________________________________||
 params = [

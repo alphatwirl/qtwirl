@@ -8,7 +8,7 @@ except ImportError:
 
 import alphatwirl
 
-from qtwirl._parser import parse_reader_cfg
+from qtwirl._parser._parser import parse_reader_cfg
 
 ##__________________________________________________________________||
 RoundLog = mock.Mock()

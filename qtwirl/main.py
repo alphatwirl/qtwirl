@@ -16,7 +16,7 @@ from alphatwirl.loop.splitfuncs import create_files_start_length_list
 from alphatwirl.loop.merge import merge_in_order
 
 from ._misc import is_dict
-from ._parser import parse_file, parse_reader_cfg
+from ._parser._parser import parse_file, parse_reader_cfg
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']

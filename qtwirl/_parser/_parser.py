@@ -1,6 +1,6 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 
-from ._misc import is_dict
+from .._misc import is_dict
 from ._tblcfg import complete_table_cfg
 from ._selcfg import complete_selection_cfg
 

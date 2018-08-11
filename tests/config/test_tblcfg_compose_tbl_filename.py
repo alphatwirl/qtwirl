@@ -1,7 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import pytest
 
-from qtwirl._tblcfg import compose_tbl_filename
+from qtwirl._parser._tblcfg import compose_tbl_filename
 
 ##__________________________________________________________________||
 params = [

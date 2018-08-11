@@ -8,7 +8,7 @@ except ImportError:
 
 import alphatwirl
 
-from qtwirl._parser import parse_reader_cfg
+from qtwirl._parser._parser import parse_reader_cfg
 
 ##__________________________________________________________________||
 def mock_complete_table_cfg(cfg):
@@ -16,7 +16,7 @@ def mock_complete_table_cfg(cfg):
 
 @pytest.fixture(autouse=True)
 def monkeypatch_complete_table_cfg(monkeypatch):
-    from qtwirl import _parser
+    from qtwirl._parser import _parser
     monkeypatch.setattr(_parser, 'complete_table_cfg', mock_complete_table_cfg)
 
 def mock_complete_selection_cfg(cfg):
@@ -24,7 +24,7 @@ def mock_complete_selection_cfg(cfg):
 
 @pytest.fixture(autouse=True)
 def monkeypatch_complete_selection_cfg(monkeypatch):
-    from qtwirl import _parser
+    from qtwirl._parser import _parser
     monkeypatch.setattr(_parser, 'complete_selection_cfg', mock_complete_selection_cfg)
 
 ##__________________________________________________________________||

@@ -1,7 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import os
 
-from ._misc import is_dict
+from .._misc import is_dict
 
 ##__________________________________________________________________||
 def complete_selection_cfg(cfg):
