@@ -2,6 +2,7 @@
 
 from ._misc import is_dict
 from ._tblcfg import complete_table_cfg
+from ._selcfg import complete_selection_cfg
 
 ##__________________________________________________________________||
 def parse_file(file):
@@ -46,6 +47,8 @@ def _expand_cfg(cfg):
     key, val = list(cfg.items())[0]
     if key == 'table_cfg':
         return dict(table_cfg=complete_table_cfg(val))
+    elif key == 'selection_cfg':
+        return dict(selection_cfg=complete_selection_cfg(val))
     elif key == 'reader':
         return flatten_reader(val)
     return cfg
