@@ -1,16 +1,8 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 
 from .._misc import is_dict
-from ._tblcfg import complete_table_cfg
-from ._selcfg import complete_selection_cfg
-
-##__________________________________________________________________||
-def parse_file(file):
-    if isinstance(file, str):
-        if not file: # empty string, i.e., ''
-            return [ ]
-        return [file]
-    return file
+from .tableconfig import complete_table_cfg
+from .selectionconfig import complete_selection_cfg
 
 ##__________________________________________________________________||
 def parse_reader_cfg(reader_cfg):
