@@ -52,32 +52,105 @@ def complete_table_cfg(cfg):
     return ret
 
 ##__________________________________________________________________||
-def compose_tbl_filename(tblcfg, prefix='tbl', suffix='txt',
-                         var_separator='.', idx_separator='-'):
+def compose_tbl_filename_from_config(table_cfg, default=None):
 
-    key_out_name = tblcfg['key_out_name']
-    key_index = tblcfg.get('key_index', None)
+    """compose a file name based on a table config.
 
-    if not key_out_name:
-        return prefix + '.' + suffix # e.g. "tbl_n_component.txt"
+    This function calls ``compose_tbl_filename()``.
 
-    if key_index is None:
-        colidxs = key_out_name
+    Parameters
+    ----------
+    table_cfg : dict
+        A table config
+    default : dict, optional
+        A default config
+
+    Returns
+    -------
+    str
+        A file name
+
+    """
+
+    default_base = dict(
+        file_name_prefix='tbl',
+        file_name_suffix='txt',
+        file_name_var_separator='.',
+        file_name_idx_separator='-',
+    )
+
+    if default is None:
+        default = default_base
+    else:
+        default_base.update(default)
+        default = default_base
+
+    cfg = default.copy()
+    cfg.update(table_cfg)
+
+    ret = compose_tbl_filename(
+        cfg['key_out_name'],
+        key_indices=cfg.get('key_index', None),
+        prefix=cfg['file_name_prefix'],
+        suffix=cfg['file_name_suffix'],
+        var_separator=cfg['file_name_var_separator'],
+        idx_separator=cfg['file_name_idx_separator']
+    )
+
+    return ret
+
+##__________________________________________________________________||
+def compose_tbl_filename(
+        key_names, key_indices=None,
+        prefix='tbl', suffix='txt',
+        var_separator='.', idx_separator='-'):
+    """compose a file name based on key names
+
+    Parameters
+    ----------
+    key_names : list of str
+        A list of key names
+    key_indices : list of str
+        A list of key indices, which can be a number, ``None``, a
+        wildcard ``*``, a wildcards in parentheses ``(*)``, a back
+        reference ``\\n`` (``n`` is a number),
+        e.g., ``(1, None, '*', '(*)', '\\1')``
+    prefix : str, default ``tbl``
+        A prefix of a file name
+    suffix : str, default ``txt``
+        A suffix of a file name (filename extension)
+    var_separator : str, default '.'
+        A separator between key names
+    idx_separator : str, default '-'
+        A separator between a key name and a key index
+
+    Returns
+    -------
+    str
+        A file name
+
+    """
+
+    if not key_names:
+        return prefix + '.' + suffix # e.g. "tbl.txt"
+
+    if key_indices is None:
+        colidxs = key_names
         # e.g., ('var1', 'var2', 'var3'),
 
         middle = var_separator.join(colidxs)
         # e.g., 'var1.var2.var3'
 
         ret = prefix + var_separator + middle + '.' + suffix
-        # e.g., 'tbl_n_component.var1.var2.var3.txt'
+        # e.g., 'tbl.var1.var2.var3.txt'
 
         return ret
 
     # e.g.,
-    # key_out_name = ('var1', 'var2', 'var3', 'var4', 'var5'),
-    # key_index = (1, None, '*', '(*)', '\\1')
+    # key_names = ('var1', 'var2', 'var3', 'var4', 'var5'),
+    # key_indices = (1, None, '*', '(*)', '\\1')
 
-    idx_str = key_index
+    idx_str = key_indices
     # e.g., (1, None, '*', '(*)', '\\1')
 
     idx_str = ['w' if i == '*' else i for i in idx_str]
@@ -92,14 +165,14 @@ def compose_tbl_filename(tblcfg, prefix='tbl', suffix='txt',
     idx_str = ['' if i is None else '{}{}'.format(idx_separator, i) for i in idx_str]
     # e.g., ['-1', '', '-w', '-wp', '-b1']
 
-    colidxs = [n + i for n, i in zip(key_out_name, idx_str)]
+    colidxs = [n + i for n, i in zip(key_names, idx_str)]
     # e.g., ['var1-1', 'var2', 'var3-w', 'var4-wp', 'var5-b1']
 
     middle = var_separator.join(colidxs)
     # e.g., 'var1-1.var2.var3-w.var4-wp.var5-b1'
 
     ret =  prefix + var_separator + middle + '.' + suffix
-    # e.g., tbl_n_component.var1-1.var2.var3-w.var4-wp.var5-b1.txt
+    # e.g., tbl.var1-1.var2.var3-w.var4-wp.var5-b1.txt
 
     return ret
 
