@@ -48,7 +48,7 @@ params = [
         dict(store_file=True),
         dict(
             store_file=True,
-            file_name='tbl_n.txt',
+            file_path='tbl_n.txt',
         ),
         id='empty-true'),
 
@@ -56,9 +56,18 @@ params = [
         dict(key_name='met', store_file=True),
         dict(
             store_file=True,
-            file_name='tbl_n.met.txt',
+            file_path='tbl_n.met.txt',
         ),
         id='composed'),
+
+    pytest.param(
+        dict(key_name='met', store_file=True, file_dir='out'),
+        dict(
+            store_file=True,
+            file_dir='out',
+            file_path='out/tbl_n.met.txt',
+        ),
+        id='composed-file-dir'),
 
     pytest.param(
         dict(
@@ -69,6 +78,38 @@ params = [
         dict(
             store_file=True,
             file_name='tbl.given-filename.txt',
+            file_path='tbl.given-filename.txt',
+        ),
+        id='given'),
+
+    pytest.param(
+        dict(
+            key_name='met',
+            store_file=True,
+            file_dir='out',
+            file_name='tbl.given-filename.txt',
+        ),
+        dict(
+            store_file=True,
+            file_dir='out',
+            file_name='tbl.given-filename.txt',
+            file_path='out/tbl.given-filename.txt',
+        ),
+        id='given'),
+
+    pytest.param(
+        dict(
+            key_name='met',
+            store_file=True,
+            file_dir='out',
+            file_name='tbl.given-filename_1.txt',
+            file_path='abc/def/tbl.given-filename_2.txt',
+        ),
+        dict(
+            store_file=True,
+            file_dir='out',
+            file_name='tbl.given-filename_1.txt',
+            file_path='abc/def/tbl.given-filename_2.txt',
         ),
         id='given'),
 
@@ -81,7 +122,7 @@ params = [
         dict(
             store_file=True,
             file_name_prefix='tbl_abc',
-            file_name='tbl_abc.met.txt',
+            file_path='tbl_abc.met.txt',
         ),
         id='prefix'),
 

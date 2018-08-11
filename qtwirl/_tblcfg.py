@@ -1,4 +1,5 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
+import os
 import functools
 import alphatwirl
 
@@ -69,8 +70,10 @@ def complete_table_cfg(cfg):
         ret['agg_name'] = (ret['agg_name'], )
 
     if ret['store_file']:
-        if 'file_name' not in ret:
-            ret['file_name'] = func_compose_tbl_filename(ret)
+        if 'file_path' not in ret:
+            file_dir = ret.get('file_dir', '')
+            file_name = ret.get('file_name', func_compose_tbl_filename(ret))
+            ret['file_path'] = os.path.join(file_dir, file_name)
 
     return ret
 
