@@ -1,8 +1,22 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
+import functools
 import alphatwirl
 
 ##__________________________________________________________________||
 def complete_table_cfg(cfg):
+    """complete a table config.
+
+    Parameters
+    ----------
+    cfg : dict
+        A table config
+
+    Returns
+    -------
+    dict
+        A completed table config
+
+    """
 
     default_agg_class = alphatwirl.summary.Count
     default_agg_name_for_default_agg_class = ('n', 'nvar')
@@ -19,7 +33,12 @@ def complete_table_cfg(cfg):
         weight=default_weight,
         sort=True,
         nevents=None,
+        store_file=False,
     )
+
+    func_compose_tbl_filename = functools.partial(
+        compose_tbl_filename_from_config,
+        default=dict(file_name_prefix='tbl_n'))
 
     ret = default_cfg
     ret.update(cfg)
@@ -48,6 +67,10 @@ def complete_table_cfg(cfg):
 
     if isinstance(ret['agg_name'], str):
         ret['agg_name'] = (ret['agg_name'], )
+
+    if ret['store_file']:
+        if 'file_name' not in ret:
+            ret['file_name'] = func_compose_tbl_filename(ret)
 
     return ret
 

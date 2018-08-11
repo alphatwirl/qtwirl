@@ -27,31 +27,72 @@ binning1 = MockBinning()
 binning2 = MockBinning()
 
 ##__________________________________________________________________||
+KEYS_NEED_TO_EXIST_BUT_DONT_TEST_VALUES = (
+    'key_name', 'key_index', 'key_binning', 'key_out_name',
+    'val_name', 'val_index', 'agg_class', 'agg_name',
+    'weight', 'sort', 'nevents')
+
 params = [
 
     pytest.param(
         dict(),
+        dict(store_file=False),
+        id='empty'),
+
+    pytest.param(
+        dict(store_file=False),
+        dict(store_file=False),
+        id='empty-false'),
+
+    pytest.param(
+        dict(store_file=True),
         dict(
-            key_name=(),
-            key_index=None,
-            key_binning=None,
-            key_out_name=(),
-            val_name=None,
-            val_index=None,
-            agg_class=Count,
-            agg_name=('n', 'nvar'),
-            weight=defaultWeight,
-            sort=True,
-            nevents=None,
+            store_file=True,
+            file_name='tbl_n.txt',
         ),
-        id='no-key-empty-dict'
-    ),
+        id='empty-true'),
+
+    pytest.param(
+        dict(key_name='met', store_file=True),
+        dict(
+            store_file=True,
+            file_name='tbl_n.met.txt',
+        ),
+        id='composed'),
+
+    pytest.param(
+        dict(
+            key_name='met',
+            store_file=True,
+            file_name='tbl.given-filename.txt',
+        ),
+        dict(
+            store_file=True,
+            file_name='tbl.given-filename.txt',
+        ),
+        id='given'),
+
+    pytest.param(
+        dict(
+            key_name='met',
+            store_file=True,
+            file_name_prefix='tbl_abc',
+        ),
+        dict(
+            store_file=True,
+            file_name_prefix='tbl_abc',
+            file_name='tbl_abc.met.txt',
+        ),
+        id='prefix'),
+
 ]
 
 @pytest.mark.parametrize('arg, expected', params)
 def test_complete(arg, expected):
     actual = complete_table_cfg(arg)
-    assert expected == actual
     assert arg is not actual
+    for k in KEYS_NEED_TO_EXIST_BUT_DONT_TEST_VALUES:
+        actual.pop(k)
+    assert expected == actual
 
 ##__________________________________________________________________||

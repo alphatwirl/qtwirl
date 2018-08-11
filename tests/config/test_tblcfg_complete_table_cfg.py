@@ -45,6 +45,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='no-key-empty-dict'
     ),
@@ -62,6 +63,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='no-key-empty-key'
     ),
@@ -83,6 +85,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='one-key-no-tuple'
     ),
@@ -103,6 +106,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='one-key-one-bin-no-tuple'
     ),
@@ -125,6 +129,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='one-key-idx-bin-out-no-tuple'
     ),
@@ -145,6 +150,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='one-key-tuple'
     ),
@@ -168,6 +174,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-empty-key-empty-val'
     ),
@@ -189,6 +196,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-keys-empty-vals'
     ),
@@ -211,6 +219,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-keys-one-val-tuple'
     ),
@@ -234,6 +243,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-keys-one-val-idx-tuple'
     ),
@@ -257,6 +267,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-one-agg-tuple'
     ),
@@ -280,6 +291,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-one-agg-no-tuple'
     ),
@@ -302,6 +314,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-keys-one-val-no-tuple'
     ),
@@ -325,6 +338,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-keys-one-val-idx-no-tuple'
     ),
@@ -347,6 +361,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-keys-2-vals'
     ),
@@ -370,6 +385,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-2-keys-2-vals-key-indices'
     ),
@@ -393,6 +409,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-2-keys-2-vals-val-indices'
     ),
@@ -417,6 +434,7 @@ params = [
             weight=defaultWeight,
             sort=True,
             nevents=None,
+            store_file=False,
         ),
         id='summary-class-2-keys-2-vals-key-indices-val-indices'
     ),
