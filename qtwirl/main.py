@@ -71,6 +71,7 @@ def qtwirl(file, reader_cfg,
     files = parse_file(file)
 
     ##
+    reader_cfg = parse_reader_cfg(reader_cfg)
     reader = create_reader(reader_cfg)
 
     ##
@@ -111,7 +112,6 @@ def qtwirl(file, reader_cfg,
 
 ##__________________________________________________________________||
 def create_reader(cfg):
-    cfg = parse_reader_cfg(cfg)
     if is_dict(cfg):
         return _create_reader_for_single_cfg(cfg)
     readers = [_create_reader_for_single_cfg(c) for c in cfg]
