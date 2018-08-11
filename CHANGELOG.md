@@ -15,7 +15,14 @@
               - `valIndices` -> `val_index`
               - `summaryClass` -> `agg_class`
               - `summaryColumnNames` -> `agg_name`
-        - added new keys: `store_file`, 'file_name'
+        - added new keys: `store_file`, `file_path`, `file_name`,
+          `file_dir`
+    - changes in `selection_cfg`
+        - now the full form is `dict(condition=condition)`
+        - added new keys: `store_file`, `file_path`, `file_name`,
+          `file_dir`
+- reorganized directory structure, created new private sub-packages
+  `_parser` and `_builder`
 
 ## [0.04.0] - 2018-08-09
 
