@@ -3,6 +3,19 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.04.0...master))
+- updated `reader_cfg`
+    - now `reader` can be a list of readers
+    - changes in `table_cfg`
+        - renamed keys
+              - `keyAttrNames` -> `key_name`
+              - `keyIndices` -> `key_index`
+              - `binnings` -> `key_binning`
+              - `keyOutColumnNames` -> `key_out_name`
+              - `valAttrNames` -> `val_name`
+              - `valIndices` -> `val_index`
+              - `summaryClass` -> `agg_class`
+              - `summaryColumnNames` -> `agg_name`
+        - added new keys: `store_file`, 'file_name'
 
 ## [0.04.0] - 2018-08-09
 
