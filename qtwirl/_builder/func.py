@@ -135,8 +135,7 @@ def to_dataframe_store_file(reader, columns, path):
     dir_ = os.path.dirname(path)
     alphatwirl.misc.mkdir_p(dir_)
     with open(path, 'w') as f:
-        content = alphatwirl.misc.list_to_aligned_text(
-            tuple_list_with_header).encode()
+        content = alphatwirl.misc.list_to_aligned_text(tuple_list_with_header)
         f.write(content)
 
     return pd.DataFrame(tuple_list, columns=columns)
