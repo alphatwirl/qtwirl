@@ -5,7 +5,7 @@ import alphatwirl
 
 from ._parser.inputs import parse_data
 from ._parser.readerconfig import expand_reader_config
-from ._builder.func import create_reader, create_file_loaders, let_reader_read
+from ._builder.func import build_reader, create_file_loaders, let_reader_read
 
 ##__________________________________________________________________||
 __all__ = ['qtwirl']
@@ -60,7 +60,7 @@ def qtwirl(data, reader_cfg,
 
     ##
     reader_cfg = expand_reader_config(reader_cfg)
-    reader = create_reader(reader_cfg)
+    reader = build_reader(reader_cfg)
 
     ##
     if dispatcher_options is None:

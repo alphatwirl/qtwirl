@@ -13,7 +13,7 @@ from alphatwirl.loop.merge import merge_in_order
 from .._misc import is_dict
 
 ##__________________________________________________________________||
-def create_reader(cfg):
+def build_reader(cfg):
     if is_dict(cfg):
         return _create_reader_for_single_cfg(cfg)
     readers = [_create_reader_for_single_cfg(c) for c in cfg]
