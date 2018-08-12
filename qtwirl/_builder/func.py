@@ -43,12 +43,35 @@ def _build_single_reader(cfg):
     if key == 'table_cfg':
         return build_reader_for_table_config(val)
     elif key == 'selection_cfg':
-        return alphatwirl.selection.build_selection(path_cfg=val['condition'])
+        return build_reader_for_selection_config(val)
     elif key == 'reader':
         return val
     else:
         # TODO: produce warnings here
         return None
+
+##__________________________________________________________________||
+def build_reader_for_selection_config(cfg):
+    if cfg['count'] is True:
+        ret = alphatwirl.selection.build_selection(
+            path_cfg=cfg['condition'],
+            AllClass=alphatwirl.selection.modules.AllwCount,
+            AnyClass=alphatwirl.selection.modules.AnywCount,
+            NotClass=alphatwirl.selection.modules.NotwCount
+        )
+        ret.collector = build_collector_for_selection_config(cfg)
+    else:
+        ret = alphatwirl.selection.build_selection(path_cfg=cfg['condition'])
+    return ret
+
+def build_collector_for_selection_config(cfg):
+    columns = ('depth', 'class', 'name', 'pass', 'total')
+    if cfg['store_file'] is True:
+        return functools.partial(
+            to_dataframe_store_file,
+            columns=columns, path=cfg['file_path'])
+    else:
+        return functools.partial(to_dataframe, columns=columns)
 
 ##__________________________________________________________________||
 def build_reader_for_table_config(cfg):
@@ -77,7 +100,7 @@ def build_reader_for_table_config(cfg):
     summarizer = alphatwirl.summary.Summarizer(Summary=cfg['agg_class'])
 
     ##
-    collector = build_collector(cfg)
+    collector = build_collector_for_table_config(cfg)
 
     ##
     reader = alphatwirl.summary.Reader(
@@ -91,7 +114,7 @@ def build_reader_for_table_config(cfg):
     return reader
 
 ##__________________________________________________________________||
-def build_collector(cfg):
+def build_collector_for_table_config(cfg):
     columns = cfg['key_out_name'] + cfg['agg_name']
     if cfg['store_file'] is True:
         return functools.partial(

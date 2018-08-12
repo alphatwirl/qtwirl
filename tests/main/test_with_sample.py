@@ -73,9 +73,13 @@ def test_one_table(store_file, file_dir):
         tbl_stored_path = os.path.join(file_dir, tbl_stored_file_name)
         tbl_stored = pd.read_table(tbl_stored_path, delim_whitespace=True)
         assert_frame_equal(tbl_expected, tbl_stored, check_names=True)
+    else:
+        assert [ ] == os.listdir(file_dir)
 
 ##__________________________________________________________________||
-def test_one_selection_four_tables():
+@pytest.mark.parametrize('count', [False, True])
+@pytest.mark.parametrize('store_file', [False, True])
+def test_one_selection_four_tables(count, store_file, file_dir):
 
     ##
     sample_paths = SAMPLE_ROOT_FILE_PATHS
@@ -84,22 +88,39 @@ def test_one_selection_four_tables():
     RoundLog = alphatwirl.binning.RoundLog
     from scribblers.essentials import FuncOnNumpyArrays
     reader_cfg = [
-        dict(selection_cfg=dict(All=('ev: ev.njets[0] > 4', ))),
+        dict(selection_cfg=dict(
+            condition=dict(All=('ev: ev.njets[0] > 4', )),
+            count=count,
+            store_file=store_file,
+            file_dir=file_dir
+        )),
         dict(key_name='jet_pt',
              key_binning=RoundLog(0.1, 100),
              key_index='*',
-             key_out_name='jet_pt'),
+             key_out_name='jet_pt',
+             store_file=store_file,
+             file_dir=file_dir
+        ),
         dict(key_name='met',
-             key_binning=RoundLog(0.1, 100)),
+             key_binning=RoundLog(0.1, 100),
+             store_file=store_file,
+             file_dir=file_dir
+        ),
         dict(
             key_name=('njets', 'met'),
-            key_binning=(None, RoundLog(0.2, 100, min=50, underflow_bin=0))), # use None
+            key_binning=(None, RoundLog(0.2, 100, min=50, underflow_bin=0)),
+             store_file=store_file,
+             file_dir=file_dir
+        ),
         dict(reader=FuncOnNumpyArrays(
             src_arrays=['jet_pt'],
             out_name='ht',
             func=np.sum)),
         dict(key_name='ht',
-             key_binning=RoundLog(0.1, 100)),
+             key_binning=RoundLog(0.1, 100),
+             store_file=store_file,
+             file_dir=file_dir
+        ),
     ]
 
     results = qtwirl(
@@ -111,23 +132,39 @@ def test_one_selection_four_tables():
         max_events_per_process=500
     )
 
-    #
-    assert 4 == len(results)
-
     ##
-    tbl_dir = os.path.join(TESTDATADIR, 'tbl')
-    tbl_paths = [
-        os.path.join(tbl_dir, '01', 'tbl_n.jet_pt-w.txt'),
-        os.path.join(tbl_dir, '01', 'tbl_n.met.txt'),
-        os.path.join(tbl_dir, '01', 'tbl_n.njets.met.txt'),
-        os.path.join(tbl_dir, '01', 'tbl_n.ht.txt'),
+    tbl_expected_file_names = [
+        'tbl_selection_count.txt',
+        'tbl_n.jet_pt-w.txt',
+        'tbl_n.met.txt',
+        'tbl_n.njets.met.txt',
+        'tbl_n.ht.txt',
     ]
-    tbls = [pd.read_table(p, delim_whitespace=True) for p in tbl_paths]
+    if count is False:
+        tbl_expected_file_names = tbl_expected_file_names[1:]
 
     ##
-    assert_frame_equal(tbls[0], results[0], check_names=True)
-    assert_frame_equal(tbls[1], results[1], check_names=True, check_less_precise=True)
-    assert_frame_equal(tbls[2], results[2], check_names=True)
-    assert_frame_equal(tbls[3], results[3], check_names=True)
+    assert len(tbl_expected_file_names) == len(results)
+
+    ##
+    tbl_expected_dir = os.path.join(TESTDATADIR, 'tbl')
+    tbl_expected_paths = [os.path.join(tbl_expected_dir, '01', n) for n in tbl_expected_file_names]
+    tbls_expected = [pd.read_table(p, delim_whitespace=True) for p in tbl_expected_paths]
+
+    ##
+    for expected, actual in zip(tbls_expected, results):
+        assert_frame_equal(expected, actual, check_names=True, check_less_precise=True)
+
+
+    ##
+    if store_file is True:
+        assert set(tbl_expected_file_names) == set(os.listdir(file_dir))
+        for expected, file_name in zip(tbls_expected, tbl_expected_file_names):
+            tbl_stored_path = os.path.join(file_dir, file_name)
+            tbl_stored = pd.read_table(tbl_stored_path, delim_whitespace=True)
+            assert_frame_equal(expected, tbl_stored, check_names=True, check_less_precise=True)
+
+    else:
+        assert [ ] == os.listdir(file_dir)
 
 ##__________________________________________________________________||

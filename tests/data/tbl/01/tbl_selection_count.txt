@@ -1,0 +1,2 @@
+ depth     class                  name pass total
+     1 LambdaStr "ev: ev.njets[0] > 4" 1115  3000
