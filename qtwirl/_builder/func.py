@@ -14,56 +14,102 @@ from .._misc import is_dict
 
 ##__________________________________________________________________||
 def build_reader(cfg):
+    """build a reader based on a configuration
+
+    Parameters
+    ----------
+    cfg : dict or list of dicts
+        Reader configuration (in its full form)
+
+    Returns
+    -------
+    object
+        A reader, which, for example, can be given to ``EventLoop`` of
+        AlphaTwirl
+
+    """
     if is_dict(cfg):
-        return _create_reader_for_single_cfg(cfg)
-    readers = [_create_reader_for_single_cfg(c) for c in cfg]
+        return _build_single_reader(cfg)
+
+    # cfg is a list
+    readers = [_build_single_reader(c) for c in cfg]
     ret = alphatwirl.loop.ReaderComposite(readers=readers)
     return ret
 
-def _create_reader_for_single_cfg(cfg):
+def _build_single_reader(cfg):
     # cfg is a dict with one item
     key, val = list(cfg.items())[0]
     if key == 'table_cfg':
-        return create_reader_from_table_cfg(val)
+        return build_reader_for_table_config(val)
     elif key == 'selection_cfg':
         return alphatwirl.selection.build_selection(path_cfg=val['condition'])
     elif key == 'reader':
         return val
     else:
+        # TODO: produce warnings here
         return None
 
 ##__________________________________________________________________||
-def create_reader_from_table_cfg(cfg):
-    return build_counter(cfg)
+def build_reader_for_table_config(cfg):
 
-##__________________________________________________________________||
-def build_counter(tblcfg):
+    ## binnings: replace None with Echo with no next func
+    ## TODO: this feature should be included in KeyValueComposer
+    ## https://github.com/alphatwirl/alphatwirl/issues/49
     echo = alphatwirl.binning.Echo(nextFunc=None)
-    binnings = tblcfg['key_binning']
+    binnings = cfg['key_binning']
     if binnings:
         binnings = tuple(b if b else echo for b in binnings)
+
+    ##
     keyValComposer = alphatwirl.summary.KeyValueComposer(
-        keyAttrNames=tblcfg['key_name'],
+        keyAttrNames=cfg['key_name'],
         binnings=binnings,
-        keyIndices=tblcfg['key_index'],
-        valAttrNames=tblcfg['val_name'],
-        valIndices=tblcfg['val_index']
+        keyIndices=cfg['key_index'],
+        valAttrNames=cfg['val_name'],
+        valIndices=cfg['val_index']
     )
+
+    ##
     nextKeyComposer = alphatwirl.summary.NextKeyComposer(binnings) if binnings is not None else None
-    summarizer = alphatwirl.summary.Summarizer(
-        Summary=tblcfg['agg_class']
-    )
+
+    ##
+    summarizer = alphatwirl.summary.Summarizer(Summary=cfg['agg_class'])
+
+    ##
+    collector = build_collector(cfg)
+
+    ##
     reader = alphatwirl.summary.Reader(
         keyValComposer=keyValComposer,
         summarizer=summarizer,
-        collector=functools.partial(
-            collect_results_into_dataframe,
-            columns=tblcfg['key_out_name'] + tblcfg['agg_name']),
+        collector=collector,
         nextKeyComposer=nextKeyComposer,
-        weightCalculator=tblcfg['weight'],
-        nevents=tblcfg['nevents']
+        weightCalculator=cfg['weight'],
+        nevents=cfg['nevents']
     )
     return reader
+
+##__________________________________________________________________||
+def build_collector(cfg):
+    return functools.partial(
+        collect_results_into_dataframe,
+        columns=cfg['key_out_name'] + cfg['agg_name'])
+
+##__________________________________________________________________||
+def collect_results_into_dataframe(reader, columns):
+    tuple_list = reader.summarizer.to_tuple_list()
+    # e.g.,
+    # ret = [
+    #         (200, 2, 120, 240),
+    #         (300, 2, 490, 980),
+    #         (300, 3, 210, 420)
+    #         (300, 2, 20, 40),
+    #         (300, 3, 15, 30)
+    # ]
+
+    if tuple_list is None:
+        return None
+    return pd.DataFrame(tuple_list, columns=columns)
 
 ##__________________________________________________________________||
 def create_file_loaders(
@@ -137,21 +183,5 @@ def let_reader_read(files, reader, parallel, func_create_file_loaders):
         # assert 1 == len(runid_reader_map)
         reader = list(runid_reader_map.values())[0]
     return reader.collect()
-
-##__________________________________________________________________||
-def collect_results_into_dataframe(reader, columns):
-    tuple_list = reader.summarizer.to_tuple_list()
-    # e.g.,
-    # ret = [
-    #         (200, 2, 120, 240),
-    #         (300, 2, 490, 980),
-    #         (300, 3, 210, 420)
-    #         (300, 2, 20, 40),
-    #         (300, 3, 15, 30)
-    # ]
-
-    if tuple_list is None:
-        return None
-    return pd.DataFrame(tuple_list, columns=columns)
 
 ##__________________________________________________________________||
