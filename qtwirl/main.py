@@ -3,7 +3,7 @@ import functools
 
 import alphatwirl
 
-from ._parser.input import parse_file
+from ._parser.inputs import parse_data
 from ._parser.readerconfig import parse_reader_cfg
 from ._builder.func import create_reader, create_file_loaders, let_reader_read
 
@@ -11,7 +11,7 @@ from ._builder.func import create_reader, create_file_loaders, let_reader_read
 __all__ = ['qtwirl']
 
 ##__________________________________________________________________||
-def qtwirl(file, reader_cfg,
+def qtwirl(data, reader_cfg,
            tree_name=None,
            parallel_mode='multiprocessing',
            dispatcher_options=None,
@@ -27,7 +27,7 @@ def qtwirl(file, reader_cfg,
 
     Parameters
     ----------
-    file : str or list of str
+    data : str or list of str
         Input file path(s)
     reader_cfg : dict or list of dict
         Reader configuration
@@ -56,7 +56,7 @@ def qtwirl(file, reader_cfg,
     """
 
     ##
-    files = parse_file(file)
+    files = parse_data(data)
 
     ##
     reader_cfg = parse_reader_cfg(reader_cfg)

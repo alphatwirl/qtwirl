@@ -1,7 +1,7 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import pytest
 
-from qtwirl._parser.input import parse_file
+from qtwirl._parser.inputs import parse_data
 
 ##__________________________________________________________________||
 @pytest.mark.parametrize('arg, expected', [
@@ -10,7 +10,7 @@ from qtwirl._parser.input import parse_file
     pytest.param([ ], [ ], id='empty-list'),
     pytest.param('', [ ], id='empty-string'),
 ])
-def test_parse_file(arg, expected):
-    assert expected == parse_file(arg)
+def test_parse_data(arg, expected):
+    assert expected == parse_data(arg)
 
 ##__________________________________________________________________||

@@ -1,11 +1,11 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 
 ##__________________________________________________________________||
-def parse_file(file):
-    if isinstance(file, str):
-        if not file: # empty string, i.e., ''
+def parse_data(data):
+    if isinstance(data, str):
+        if not data: # empty string, i.e., ''
             return [ ]
-        return [file]
-    return file
+        return [data]
+    return data
 
 ##__________________________________________________________________||

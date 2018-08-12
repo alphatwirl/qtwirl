@@ -42,7 +42,7 @@ def test_with_sample_one_dict():
     )
 
     results = qtwirl(
-        file=sample_paths,
+        sample_paths,
         reader_cfg=reader_cfg,
         tree_name='tree',
         process=16,
@@ -87,7 +87,7 @@ def test_with_sample():
     ]
 
     results = qtwirl(
-        file=sample_paths,
+        sample_paths,
         reader_cfg=reader_cfg,
         tree_name='tree',
         process=16,
