@@ -1,4 +1,5 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
+import os
 import copy
 import collections
 import functools
@@ -91,24 +92,36 @@ def build_reader_for_table_config(cfg):
 
 ##__________________________________________________________________||
 def build_collector(cfg):
-    return functools.partial(
-        collect_results_into_dataframe,
-        columns=cfg['key_out_name'] + cfg['agg_name'])
+    columns = cfg['key_out_name'] + cfg['agg_name']
+    if cfg['store_file'] is True:
+        return functools.partial(
+            to_dataframe_store_file,
+            columns=columns, path=cfg['file_path'])
+    else:
+        return functools.partial(to_dataframe, columns=columns)
 
 ##__________________________________________________________________||
-def collect_results_into_dataframe(reader, columns):
-    tuple_list = reader.summarizer.to_tuple_list()
-    # e.g.,
-    # ret = [
-    #         (200, 2, 120, 240),
-    #         (300, 2, 490, 980),
-    #         (300, 3, 210, 420)
-    #         (300, 2, 20, 40),
-    #         (300, 3, 15, 30)
-    # ]
+def to_dataframe_store_file(reader, columns, path):
+    tuple_list = reader.results().to_tuple_list()
 
     if tuple_list is None:
-        return None
+        tuple_list = [ ]
+
+    tuple_list_with_header = [columns] + tuple_list
+
+    dir_ = os.path.dirname(path)
+    alphatwirl.misc.mkdir_p(dir_)
+    with open(path, 'w') as f:
+        content = alphatwirl.misc.list_to_aligned_text(
+            tuple_list_with_header).encode()
+        f.write(content)
+
+    return pd.DataFrame(tuple_list, columns=columns)
+
+def to_dataframe(reader, columns):
+    tuple_list = reader.results().to_tuple_list()
+    if tuple_list is None:
+        tuple_list = [ ]
     return pd.DataFrame(tuple_list, columns=columns)
 
 ##__________________________________________________________________||
