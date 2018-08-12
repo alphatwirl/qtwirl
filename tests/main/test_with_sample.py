@@ -23,7 +23,7 @@ pytestmark = pytest.mark.filterwarnings('ignore::RuntimeWarning')
 def test_with_sample_one_dict():
 
     ##
-    sample_dir = os.path.join(os.path.dirname(__file__), 'data')
+    sample_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
     sample_basenames = [
         'sample_chain_01.root',
         'sample_chain_02.root',
@@ -33,7 +33,7 @@ def test_with_sample_one_dict():
     sample_paths = [os.path.join(sample_dir, b) for b in sample_basenames]
 
     ##
-    tbl_dir = os.path.join(os.path.dirname(__file__), 'tbl')
+    tbl_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'tbl')
     tbl_paths = [
         os.path.join(tbl_dir, '00', 'tbl_n.jet_pt-w.txt'),
         os.path.join(tbl_dir, '00', 'tbl_n.met.txt'),
@@ -64,7 +64,7 @@ def test_with_sample_one_dict():
 def test_with_sample():
 
     ##
-    sample_dir = os.path.join(os.path.dirname(__file__), 'data')
+    sample_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
     sample_basenames = [
         'sample_chain_01.root',
         'sample_chain_02.root',
@@ -74,7 +74,7 @@ def test_with_sample():
     sample_paths = [os.path.join(sample_dir, b) for b in sample_basenames]
 
     ##
-    tbl_dir = os.path.join(os.path.dirname(__file__), 'tbl')
+    tbl_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'tbl')
     tbl_paths = [
         os.path.join(tbl_dir, '01', 'tbl_n.jet_pt-w.txt'),
         os.path.join(tbl_dir, '01', 'tbl_n.met.txt'),
