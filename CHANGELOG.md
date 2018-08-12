@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.04.0...master))
+- renamed the 1st argument of `qtwirl()` `file` `data`
 - updated `reader_cfg`
     - now `reader` can be a list of readers
     - changes in `table_cfg`
@@ -20,9 +21,12 @@
     - changes in `selection_cfg`
         - now the full form is `dict(condition=condition)`
         - added new keys: `store_file`, `file_path`, `file_name`,
-          `file_dir`
+          `file_dir`, `count`
+- added option to make cutflow table
+- added option to store results to files
 - reorganized directory structure, created new private sub-packages
   `_parser` and `_builder`
+- added ``pytest.ini`` file
 
 ## [0.04.0] - 2018-08-09
 
