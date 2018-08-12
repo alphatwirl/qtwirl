@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.04.0...master))
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.05.0...master))
+
+## [0.05.0] - 2018-08-12
+
+**PyPI**: https://pypi.org/project/qtwirl/0.5.0/
+
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.04.0...v0.05.0))
+- changed the minimum required versoin of AlphaTwirl to 0.20.0
 - renamed the 1st argument of `qtwirl()` `file` `data`
 - updated `reader_cfg`
     - now `reader` can be a list of readers
