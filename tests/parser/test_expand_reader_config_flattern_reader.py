@@ -8,7 +8,7 @@ except ImportError:
 
 import alphatwirl
 
-from qtwirl._parser.readerconfig import parse_reader_cfg
+from qtwirl._parser.readerconfig import expand_reader_config
 
 ##__________________________________________________________________||
 RoundLog = mock.Mock()
@@ -105,7 +105,7 @@ params = [
 ]
 
 @pytest.mark.parametrize('arg, expected', params)
-def test_parse_reader_cfg(arg, expected):
-    assert expected == parse_reader_cfg(arg)
+def test_expand_reader_config(arg, expected):
+    assert expected == expand_reader_config(arg)
 
 ##__________________________________________________________________||

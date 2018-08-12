@@ -5,7 +5,7 @@ from .tableconfig import complete_table_cfg
 from .selectionconfig import complete_selection_cfg
 
 ##__________________________________________________________________||
-def parse_reader_cfg(reader_cfg):
+def expand_reader_config(reader_cfg):
 
     if reader_cfg is None:
         return None

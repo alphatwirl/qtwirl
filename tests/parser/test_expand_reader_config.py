@@ -8,7 +8,7 @@ except ImportError:
 
 import alphatwirl
 
-from qtwirl._parser.readerconfig import parse_reader_cfg
+from qtwirl._parser.readerconfig import expand_reader_config
 
 ##__________________________________________________________________||
 def mock_complete_table_cfg(cfg):
@@ -152,8 +152,8 @@ params = [
 ]
 
 @pytest.mark.parametrize('arg, expected', params)
-def test_parse_reader_cfg(arg, expected):
-    actual = parse_reader_cfg(arg)
+def test_expand_reader_config(arg, expected):
+    actual = expand_reader_config(arg)
     assert expected == actual
 
 ##__________________________________________________________________||

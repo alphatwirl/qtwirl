@@ -4,7 +4,7 @@ import functools
 import alphatwirl
 
 from ._parser.inputs import parse_data
-from ._parser.readerconfig import parse_reader_cfg
+from ._parser.readerconfig import expand_reader_config
 from ._builder.func import create_reader, create_file_loaders, let_reader_read
 
 ##__________________________________________________________________||
@@ -59,7 +59,7 @@ def qtwirl(data, reader_cfg,
     files = parse_data(data)
 
     ##
-    reader_cfg = parse_reader_cfg(reader_cfg)
+    reader_cfg = expand_reader_config(reader_cfg)
     reader = create_reader(reader_cfg)
 
     ##
