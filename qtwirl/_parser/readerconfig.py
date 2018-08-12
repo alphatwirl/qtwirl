@@ -6,7 +6,20 @@ from .selectionconfig import complete_selection_cfg
 
 ##__________________________________________________________________||
 def expand_reader_config(reader_cfg):
+    """expand a reader config into its full form
 
+    Parameters
+    ----------
+    reader_cfg : dict or list of dicts
+        Reader configuration
+
+    Returns
+    -------
+    dict or list of dicts
+        Reader configuration in its full form
+
+
+    """
     if reader_cfg is None:
         return None
 
