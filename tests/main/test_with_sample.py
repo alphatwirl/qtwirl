@@ -27,7 +27,7 @@ SAMPLE_ROOT_FILE_NAMES = [
 SAMPLE_ROOT_FILE_PATHS = [os.path.join(SAMPLE_ROOT_FILE_DIR, n) for n in SAMPLE_ROOT_FILE_NAMES]
 
 ##__________________________________________________________________||
-def test_with_sample_one_dict():
+def test_one_table():
 
     ##
     sample_paths = SAMPLE_ROOT_FILE_PATHS
@@ -59,7 +59,7 @@ def test_with_sample_one_dict():
     assert_frame_equal(tbl, results, check_names=True)
 
 ##__________________________________________________________________||
-def test_with_sample():
+def test_one_selection_four_tables():
 
     ##
     sample_paths = SAMPLE_ROOT_FILE_PATHS
