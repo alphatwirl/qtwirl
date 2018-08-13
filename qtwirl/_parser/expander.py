@@ -110,8 +110,9 @@ def expand_config(cfg, func_expand_config_dict):
     return ret
 
 ##__________________________________________________________________||
-def _expand_config_dict(cfg, expand_func_map, config_keys,
-                        default_config_key):
+def _expand_config_dict(
+        cfg, expand_func_map, config_keys, default_config_key,
+        default_dict=None, func_expand_config=None):
     """expand a piece of config
 
     Parameters
@@ -121,6 +122,8 @@ def _expand_config_dict(cfg, expand_func_map, config_keys,
     expand_func_map : dict
     config_keys : list
     default_config_key: str
+    default_dict : dict
+    func_expand_config : function
 
     Returns
     -------
@@ -140,9 +143,18 @@ def _expand_config_dict(cfg, expand_func_map, config_keys,
         # key isn't determined. return a copy
         return dict(cfg) # copy
 
+    if default_dict is None:
+        default_dict = { }
+
+    new_val = default_dict.get(key, {}).copy()
+    new_val.update(val)
+    val = new_val
+    print val
+
     #
     if key in expand_func_map:
-        return expand_func_map[key](val)
+        expand_func = expand_func_map[key]
+        return expand_func(val, func_expand_config=func_expand_config)
 
     return {key: val}
 
