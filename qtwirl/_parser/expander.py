@@ -1,17 +1,66 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
+"""
+
+A generic tool to expand config written in dict and a list of dict.
+
+This module is not specific to qtwirl and might become an independent
+package in the future.
+
+
+"""
+
 import functools
 
 from .._misc import is_dict
 
 ##__________________________________________________________________||
-def config_expander(expand_func_map, default_config_key):
+def config_expander(expand_func_map=None, config_keys=None,
+                    default_config_key=None):
+    """return a function that expands a config
+
+    Parameters
+    ----------
+    expand_func_map : dict, optional
+        A map from a config key to a function that expands the config
+        for the key
+
+    config_keys : list, optional
+        A list of extra config keys that are not in keys of
+        ``expand_func_map``.
+
+    default_config_key: str, optional
+        A default key
+
+    Returns
+    -------
+    function
+        A function that expands a config
+
+    """
+
+    if expand_func_map is None:
+        expand_func_map = {}
+
+    if config_keys is None:
+        config_keys = []
+
+    config_keys =set(config_keys)
+    config_keys.update(expand_func_map.keys())
+
+    if default_config_key is not None:
+        config_keys.add(default_config_key)
+
+    func_expand_config_dict=functools.partial(
+        _expand_config_dict,
+        expand_func_map=expand_func_map,
+        config_keys=config_keys,
+        default_config_key=default_config_key
+    )
+
     return functools.partial(
         expand_config,
-        func_expand_config_dict=functools.partial(
-            _expand_config_dict,
-            expand_func_map=expand_func_map,
-            default_config_key=default_config_key
-        ))
+        func_expand_config_dict=func_expand_config_dict
+    )
 
 ##__________________________________________________________________||
 def expand_config(cfg, func_expand_config_dict):
@@ -21,6 +70,9 @@ def expand_config(cfg, func_expand_config_dict):
     ----------
     cfg : dict, None, or list of dicts and None
         Configuration
+
+    func_expand_config_dict : function
+        A function that expand a config dict
 
     Returns
     -------
@@ -53,9 +105,8 @@ def expand_config(cfg, func_expand_config_dict):
     return ret
 
 ##__________________________________________________________________||
-def _expand_config_dict(cfg, expand_func_map, default_config_key):
-
-    config_keys = tuple(expand_func_map.keys())
+def _expand_config_dict(cfg, expand_func_map, config_keys,
+                        default_config_key):
 
     #
     if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
