@@ -97,7 +97,12 @@ def expand_config(cfg, func_expand_config_dict):
         if c is None:
             continue
         c = func_expand_config_dict(c)
+
+        if c is None:
+            continue
+
         if isinstance(c, list):
+            c = [e for e in c if e is not None]
             ret.extend(c)
         else:
             ret.append(c)
@@ -107,18 +112,38 @@ def expand_config(cfg, func_expand_config_dict):
 ##__________________________________________________________________||
 def _expand_config_dict(cfg, expand_func_map, config_keys,
                         default_config_key):
+    """expand a piece of config
+
+    Parameters
+    ----------
+    cfg : dict
+        Configuration
+    expand_func_map : dict
+    config_keys : list
+    default_config_key: str
+
+    Returns
+    -------
+    dict, list
+        Expanded configuration
+
+    """
 
     #
     if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
         # the only key is one of the config keys
         key, val = list(cfg.items())[0]
-    else:
+    elif default_config_key is not None:
         key = default_config_key
         val = cfg
-        # in other words, wrap cfg with the default config key
-        # e.g., cfg = {default_config_key: cfg}
+    else:
+        # key isn't determined. return a copy
+        return dict(cfg) # copy
 
     #
-    return expand_func_map[key](val)
+    if key in expand_func_map:
+        return expand_func_map[key](val)
+
+    return {key: val}
 
 ##__________________________________________________________________||
