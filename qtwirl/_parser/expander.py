@@ -50,20 +50,25 @@ def config_expander(expand_func_map=None, config_keys=None,
     if default_config_key is not None:
         config_keys.add(default_config_key)
 
-    func_expand_config_dict=functools.partial(
+    func_expand_config_dict = functools.partial(
         _expand_config_dict,
         expand_func_map=expand_func_map,
         config_keys=config_keys,
         default_config_key=default_config_key
     )
+    functools.update_wrapper(func_expand_config_dict, _expand_config_dict)
 
-    return functools.partial(
+    ret_pre = functools.partial(
         expand_config,
         func_expand_config_dict=func_expand_config_dict
     )
 
+    ret = functools.partial(ret_pre, func_self=ret_pre)
+    return ret
+
 ##__________________________________________________________________||
-def expand_config(cfg, func_expand_config_dict):
+def expand_config(cfg, func_expand_config_dict,
+                  default_dict=None, func_self=None):
     """expand a config into its full form
 
     Parameters
@@ -72,20 +77,30 @@ def expand_config(cfg, func_expand_config_dict):
         Configuration
 
     func_expand_config_dict : function
-        A function that expand a config dict
+        A function that expands a config dict
+
+    default_dict : dict, optional
+
+    func_self : function, optional
+        A function that expands a config, to be used for recursive
+        call, e.g., this function with ``func_expand_config_dict``
+        determined by ``funtools.partial()``.
 
     Returns
     -------
     dict, list of dicts, or None
         Configuration in its full form
 
-
     """
+
     if cfg is None:
         return None
 
+    func_self = functools.partial(func_self, func_self=func_self)
+
     if is_dict(cfg):
-        cfg = func_expand_config_dict(cfg)
+        cfg = func_expand_config_dict(
+            cfg, default_dict=default_dict, func_expand_config=func_self)
         if not cfg:
             return None
         return cfg
@@ -96,7 +111,8 @@ def expand_config(cfg, func_expand_config_dict):
     for c in cfg:
         if c is None:
             continue
-        c = func_expand_config_dict(c)
+        c = func_expand_config_dict(
+            c, default_dict=default_dict, func_expand_config=func_self)
 
         if c is None:
             continue
@@ -132,6 +148,9 @@ def _expand_config_dict(
 
     """
 
+    config_keys = set(config_keys)
+    config_keys.add('default')
+
     #
     if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
         # the only key is one of the config keys
@@ -143,18 +162,26 @@ def _expand_config_dict(
         # key isn't determined. return a copy
         return dict(cfg) # copy
 
+    #
     if default_dict is None:
         default_dict = { }
+
+    #
+    if key == 'default':
+        new_default_dict = default_dict.copy()
+        for k, v in val[0].items():
+            new_default_dict[k] = new_default_dict.get(k, {})
+            new_default_dict[k].update(v)
+        return func_expand_config(val[1], default_dict=new_default_dict)
 
     new_val = default_dict.get(key, {}).copy()
     new_val.update(val)
     val = new_val
-    print val
 
     #
     if key in expand_func_map:
         expand_func = expand_func_map[key]
-        return expand_func(val, func_expand_config=func_expand_config)
+        return expand_func(val)
 
     return {key: val}
 
