@@ -60,10 +60,13 @@ params = [
 
 ]
 
+def expand_abc_cfg(cfg, func_expand_config):
+    return dict(abc_cfg=dict(expanded=cfg))
+
 @pytest.mark.parametrize('cfg, config_keys, default_config_key, expected', params)
 def test_expand_config_dict(cfg, config_keys, default_config_key, expected):
     expand_func_map = {
-        'abc_cfg': lambda c : dict(abc_cfg=dict(expanded=c)),
+        'abc_cfg': expand_abc_cfg,
         }
     actual = _expand_config_dict(cfg, expand_func_map, config_keys, default_config_key)
     assert expected == actual

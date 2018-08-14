@@ -4,8 +4,11 @@ import pytest
 from qtwirl._parser.expander import config_expander
 
 ##__________________________________________________________________||
+def expand_abc_cfg(cfg, func_expand_config):
+    return dict(abc_cfg=dict(expanded=cfg))
+
 def test_config_expander_simple():
-    expand_func_map = {'abc_cfg': lambda c : dict(abc_cfg=dict(expanded=c))}
+    expand_func_map = {'abc_cfg': expand_abc_cfg}
     config_keys = [ ]
     default_config_key = 'abc_cfg'
     expand_config = config_expander(
