@@ -128,7 +128,7 @@ def expand_config(cfg, func_expand_config_dict,
 ##__________________________________________________________________||
 def _expand_config_dict(
         cfg, expand_func_map, config_keys, default_config_key,
-        default_dict=None, func_expand_config=None):
+        default_cfg_stack=None, func_expand_config=None):
     """expand a piece of config
 
     Parameters
@@ -138,7 +138,7 @@ def _expand_config_dict(
     expand_func_map : dict
     config_keys : list
     default_config_key: str
-    default_dict : dict
+    default_cfg_stack : list of dict
     func_expand_config : function
 
     Returns
@@ -163,19 +163,21 @@ def _expand_config_dict(
         return dict(cfg) # copy
 
     #
-    if default_dict is None:
-        default_dict = { }
+    if default_cfg_stack is None:
+        default_cfg_stack = [ ]
 
     #
-    if key == 'default':
-        new_default_dict = default_dict.copy()
-        for k, v in val[0].items():
-            new_default_dict[k] = new_default_dict.get(k, {})
-            new_default_dict[k].update(v)
-        return func_expand_config(val[1], default_dict=new_default_dict)
+    # if key == 'default':
+    #     new_default_dict = default_dict.copy()
+    #     for k, v in val[0].items():
+    #         new_default_dict[k] = new_default_dict.get(k, {})
+    #         new_default_dict[k].update(v)
+    #     return func_expand_config(val[1], default_dict=new_default_dict)
 
-    new_val = default_dict.get(key, {}).copy()
-    new_val.update(val)
+    new_val = {}
+    for default_cfg in default_cfg_stack:
+        new_val.update(default_cfg.get(key, {}))
+        new_val.update(val)
     val = new_val
 
     #

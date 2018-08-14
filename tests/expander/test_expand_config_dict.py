@@ -60,7 +60,7 @@ params = [
 
 ]
 
-def expand_abc_cfg(cfg, func_expand_config):
+def expand_abc_cfg(cfg):
     return dict(abc_cfg=dict(expanded=cfg))
 
 @pytest.mark.parametrize('cfg, config_keys, default_config_key, expected', params)
