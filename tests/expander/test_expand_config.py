@@ -6,34 +6,35 @@ try:
 except ImportError:
     import mock
 
-from qtwirl._parser.expander import expand_config
+from qtwirl._parser.expander import _expand_config
 
 ##__________________________________________________________________||
 def test_expand_config_none():
     cfg = None
-    mock_func= mock.Mock()
     expected = None
-    actual = expand_config(cfg, mock_func)
+    actual = _expand_config(cfg)
     assert expected == actual
+
+##__________________________________________________________________||
+@pytest.fixture()
+def mock_expand_one_dict(monkeypatch):
+    ret = mock.Mock()
+    import qtwirl._parser.expander as module
+    monkeypatch.setattr(module, '_expand_one_dict', ret)
+    return ret
 
 @pytest.mark.parametrize('cfg', [dict(), dict(A=1)])
 @pytest.mark.parametrize('func_ret', [None, [], {}, dict(A=1), [dict(B=2, C=3)]])
-def test_expand_config_dict(cfg, func_ret):
+def test_expand_config_dict(cfg, func_ret, mock_expand_one_dict):
     if func_ret:
         expected = func_ret
     else:
         expected = None
-    mock_func= mock.Mock()
-    mock_func.return_value = func_ret
-    actual = expand_config(cfg, mock_func)
+    mock_expand_one_dict.return_value = func_ret
+    actual = _expand_config(cfg)
     assert expected == actual
 
-@pytest.fixture()
-def mock_func():
-    ret = mock.Mock()
-    ret.return_value = None
-    return ret
-
+##__________________________________________________________________||
 @pytest.mark.parametrize(
     'cfg, func_side_eff, expected', [
         ([], [], []),
@@ -64,10 +65,9 @@ def mock_func():
 
     ]
 )
-def test_expand_config_list(cfg, func_side_eff, expected):
-    mock_func= mock.Mock()
-    mock_func.side_effect = func_side_eff
-    actual = expand_config(cfg, mock_func)
+def test_expand_config_list(cfg, func_side_eff, expected, mock_expand_one_dict):
+    mock_expand_one_dict.side_effect = func_side_eff
+    actual = _expand_config(cfg)
     assert expected == actual
 
 ##__________________________________________________________________||

@@ -9,6 +9,7 @@ package in the future.
 
 """
 
+import logging
 import functools
 
 from .._misc import is_dict
@@ -41,6 +42,9 @@ def config_expander(expand_func_map=None, config_keys=None,
     if expand_func_map is None:
         expand_func_map = {}
 
+    # TODO: should check if 'set_default' already exists
+    expand_func_map['set_default'] = _set_default
+
     if config_keys is None:
         config_keys = []
 
@@ -50,25 +54,20 @@ def config_expander(expand_func_map=None, config_keys=None,
     if default_config_key is not None:
         config_keys.add(default_config_key)
 
-    func_expand_config_dict = functools.partial(
-        _expand_config_dict,
+    shared = dict(
+        default_cfg_stack=[ ],
         expand_func_map=expand_func_map,
         config_keys=config_keys,
-        default_config_key=default_config_key
-    )
-    functools.update_wrapper(func_expand_config_dict, _expand_config_dict)
-
-    ret_pre = functools.partial(
-        expand_config,
-        func_expand_config_dict=func_expand_config_dict
+        default_config_key=default_config_key,
+        func_apply=_apply_default
     )
 
-    ret = functools.partial(ret_pre, func_self=ret_pre)
+    ret = functools.partial(_expand_config, shared=shared)
+
     return ret
 
 ##__________________________________________________________________||
-def expand_config(cfg, func_expand_config_dict,
-                  default_dict=None, func_self=None):
+def _expand_config(cfg, shared=None):
     """expand a config into its full form
 
     Parameters
@@ -76,15 +75,9 @@ def expand_config(cfg, func_expand_config_dict,
     cfg : dict, None, or list of dicts and None
         Configuration
 
-    func_expand_config_dict : function
-        A function that expands a config dict
-
-    default_dict : dict, optional
-
-    func_self : function, optional
-        A function that expands a config, to be used for recursive
-        call, e.g., this function with ``func_expand_config_dict``
-        determined by ``funtools.partial()``.
+    shared : dict, optional
+        A dict of shared objects, to be given by ``config_expander()``
+        with ``functools.partial()``.
 
     Returns
     -------
@@ -96,23 +89,24 @@ def expand_config(cfg, func_expand_config_dict,
     if cfg is None:
         return None
 
-    func_self = functools.partial(func_self, func_self=func_self)
+    if shared is None:
+        shared = {}
 
     if is_dict(cfg):
-        cfg = func_expand_config_dict(
-            cfg, default_dict=default_dict, func_expand_config=func_self)
+        cfg = _expand_one_dict(cfg, shared)
         if not cfg:
             return None
         return cfg
 
     # cfg is a list of dicts and None
 
+
     ret = [ ]
     for c in cfg:
         if c is None:
             continue
-        c = func_expand_config_dict(
-            c, default_dict=default_dict, func_expand_config=func_self)
+
+        c = _expand_one_dict(c, shared)
 
         if c is None:
             continue
@@ -126,20 +120,16 @@ def expand_config(cfg, func_expand_config_dict,
     return ret
 
 ##__________________________________________________________________||
-def _expand_config_dict(
-        cfg, expand_func_map, config_keys, default_config_key,
-        default_cfg_stack=None, func_expand_config=None):
+def _expand_one_dict(cfg, shared):
     """expand a piece of config
 
     Parameters
     ----------
     cfg : dict
         Configuration
-    expand_func_map : dict
-    config_keys : list
-    default_config_key: str
-    default_cfg_stack : list of dict
-    func_expand_config : function
+
+    shared : dict
+        A dict of shared objects
 
     Returns
     -------
@@ -148,43 +138,57 @@ def _expand_config_dict(
 
     """
 
-    config_keys = set(config_keys)
-    config_keys.add('default')
-
     #
-    if len(cfg) == 1 and list(cfg.keys())[0] in config_keys:
-        # the only key is one of the config keys
-        key, val = list(cfg.items())[0]
-    elif default_config_key is not None:
-        key = default_config_key
-        val = cfg
+    if len(cfg) == 1 and list(cfg.keys())[0] in shared['config_keys']:
+        pass
+    elif shared['default_config_key'] is not None:
+        cfg = {shared['default_config_key']: cfg}
     else:
-        # key isn't determined. return a copy
+        logger = logging.getLogger(__name__)
+        msg = 'a config key cannot be determined: cfg={}, shared={!r}'.format(cfg, shared)
+        logger.warning(msg)
         return dict(cfg) # copy
 
     #
-    if default_cfg_stack is None:
-        default_cfg_stack = [ ]
+    if 'func_apply' in shared:
+        cfg = shared['func_apply'](cfg, shared)
+
+    key, val = list(cfg.items())[0]
 
     #
-    # if key == 'default':
-    #     new_default_dict = default_dict.copy()
-    #     for k, v in val[0].items():
-    #         new_default_dict[k] = new_default_dict.get(k, {})
-    #         new_default_dict[k].update(v)
-    #     return func_expand_config(val[1], default_dict=new_default_dict)
-
-    new_val = {}
-    for default_cfg in default_cfg_stack:
-        new_val.update(default_cfg.get(key, {}))
-        new_val.update(val)
-    val = new_val
-
-    #
-    if key in expand_func_map:
-        expand_func = expand_func_map[key]
-        return expand_func(val)
+    if key in shared['expand_func_map']:
+        expand_func = shared['expand_func_map'][key]
+        try:
+            return expand_func(val, shared)
+        except TypeError:
+            return expand_func(val)
 
     return {key: val}
+
+##__________________________________________________________________||
+def _set_default(cfg, shared):
+    if set(cfg.keys()) <= set(shared['config_keys']):
+        shared['default_cfg_stack'].append(cfg)
+    elif shared['default_config_key'] is not None:
+        shared['default_cfg_stack'].append({shared['default_config_key']: cfg})
+    else:
+        # TODO: produce warning or error
+        pass
+    return None
+
+def _apply_default(cfg, shared):
+    ignore = ('set_default', )
+    ret = {}
+    for key, val in cfg.items():
+        if key in ignore:
+            ret[key] = val
+            continue
+        new_val = {}
+        for default_cfg in shared['default_cfg_stack']:
+            new_val.update(default_cfg.get(key, {}))
+        print val
+        new_val.update(val)
+        ret[key] = new_val
+    return ret
 
 ##__________________________________________________________________||
