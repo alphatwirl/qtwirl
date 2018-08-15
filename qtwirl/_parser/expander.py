@@ -200,6 +200,7 @@ def _wrap_default_cfg(cfg, config_keys, default_config_key):
         return cfg
     return {default_config_key: cfg}
 
+##__________________________________________________________________||
 def _apply_default(cfg, shared):
     ignore = ('set_default', )
     ret = {}
@@ -207,11 +208,7 @@ def _apply_default(cfg, shared):
         if key in ignore:
             ret[key] = val
             continue
-        new_val = {}
-        for default_cfg in shared['default_cfg_stack']:
-            new_val.update(default_cfg.get(key, {}))
-        new_val.update(val)
-        ret[key] = new_val
+        ret[key] = apply_default_for_one_key(key, val, shared)
     return ret
 
 def apply_default_for_one_key(key, cfg, shared):
