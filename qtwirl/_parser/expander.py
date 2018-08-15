@@ -100,7 +100,6 @@ def _expand_config(cfg, shared=None):
 
     # cfg is a list of dicts and None
 
-
     ret = [ ]
     for c in cfg:
         if c is None:
@@ -147,15 +146,10 @@ def _expand_one_dict(cfg, shared):
         logger = logging.getLogger(__name__)
         msg = 'a config key cannot be determined: cfg={}, shared={!r}'.format(cfg, shared)
         logger.warning(msg)
-        return dict(cfg) # copy
+        return cfg.copy()
 
     #
-    if 'func_apply' in shared:
-        cfg = shared['func_apply'](cfg, shared)
-
     key, val = list(cfg.items())[0]
-
-    #
     if key in shared['expand_func_map']:
         expand_func = shared['expand_func_map'][key]
         try:
@@ -163,7 +157,11 @@ def _expand_one_dict(cfg, shared):
         except TypeError:
             return expand_func(val)
 
-    return {key: val}
+    #
+    if 'func_apply' in shared:
+        cfg = shared['func_apply'](cfg, shared)
+
+    return cfg.copy()
 
 ##__________________________________________________________________||
 def _set_default(cfg, shared):
@@ -186,9 +184,10 @@ def _apply_default(cfg, shared):
         new_val = {}
         for default_cfg in shared['default_cfg_stack']:
             new_val.update(default_cfg.get(key, {}))
-        print val
         new_val.update(val)
         ret[key] = new_val
+    return ret
+
 def apply_default_for_one_key(key, cfg, shared):
     """apply default to a config for a key
 

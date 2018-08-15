@@ -25,7 +25,7 @@ def mock_expand_one_dict(monkeypatch):
 
 @pytest.mark.parametrize('cfg', [dict(), dict(A=1)])
 @pytest.mark.parametrize('func_ret', [None, [], {}, dict(A=1), [dict(B=2, C=3)]])
-def test_expand_config_dict(cfg, func_ret, mock_expand_one_dict):
+def test_expand_config_one_dict(cfg, func_ret, mock_expand_one_dict):
     if func_ret:
         expected = func_ret
     else:

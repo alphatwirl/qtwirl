@@ -141,9 +141,21 @@ params = [
         dict(
             config_keys=['abc_cfg'],
             default_config_key='abc_cfg',
+            expand_func_map={'abc_cfg': expand_abc_cfg},
         ),
-        dict(abc_cfg=dict(expanded=dict(shared_applied=dict(A=1)))),
-        id='simple'
+        dict(abc_cfg=dict(expanded=dict(A=1))),
+        id='with-expand-func'
+    ),
+
+    pytest.param(
+        dict(abc_cfg=dict(A=1)),
+        dict(
+            config_keys=['abc_cfg'],
+            default_config_key='abc_cfg',
+            expand_func_map={ },
+        ),
+        dict(abc_cfg=dict(shared_applied=dict(A=1))),
+        id='without-expand-func'
     ),
 ]
 
@@ -155,7 +167,6 @@ def apply_shared(cfg, shared):
 
 @pytest.mark.parametrize('cfg, shared, expected', params)
 def test_expand_one_dict_apply(cfg, shared, expected):
-    shared['expand_func_map'] = {'abc_cfg': expand_abc_cfg}
     shared['func_apply'] = apply_shared
     actual = _expand_one_dict(cfg, shared)
 
