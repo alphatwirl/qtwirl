@@ -79,7 +79,6 @@ def config_expander(expand_func_map=None, config_keys=None,
         expand_func_map=expand_func_map,
         config_keys=config_keys,
         default_config_key=default_config_key,
-        func_apply=_apply_default
     )
 
     ret = functools.partial(_expand_config, shared=shared)
@@ -170,13 +169,11 @@ def _expand_one_dict(cfg, shared):
     key, val = list(cfg.items())[0]
 
     if key not in shared['config_keys']:
-        if 'func_apply' in shared:
-            cfg = shared['func_apply'](cfg, shared)
+        cfg = _apply_default_for_all_keys(cfg, shared)
         return cfg.copy()
 
     if key not in shared['expand_func_map']:
-        if 'func_apply' in shared:
-            cfg = shared['func_apply'](cfg, shared)
+        cfg = _apply_default_for_all_keys(cfg, shared)
         return cfg.copy()
 
     expand_func = shared['expand_func_map'][key]
@@ -201,7 +198,7 @@ def _wrap_default_cfg(cfg, config_keys, default_config_key):
     return {default_config_key: cfg}
 
 ##__________________________________________________________________||
-def _apply_default(cfg, shared):
+def _apply_default_for_all_keys(cfg, shared):
     if 'default_cfg_stack' not in shared:
         return cfg
     ignore = ('set_default', )

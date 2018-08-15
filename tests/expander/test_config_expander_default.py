@@ -8,6 +8,7 @@ from qtwirl._parser.expander import apply_default_for_one_key
 def expand_abc_cfg(cfg, shared):
     key = 'abc_cfg'
     cfg = apply_default_for_one_key(key, cfg, shared)
+    ## cfg = shared['apply_default'](key, cfg)
     return {key: dict(expanded=cfg)}
 
 ##__________________________________________________________________||

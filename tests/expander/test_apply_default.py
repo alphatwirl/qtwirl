@@ -2,7 +2,7 @@
 import logging
 import pytest
 
-from qtwirl._parser.expander import _apply_default
+from qtwirl._parser.expander import _apply_default_for_all_keys
 
 ##__________________________________________________________________||
 params = [
@@ -32,7 +32,7 @@ params = [
 param_names = 'cfg, shared, expected'
 
 @pytest.mark.parametrize(param_names, params)
-def test_apply_default(cfg, shared, expected):
-    assert expected == _apply_default(cfg, shared)
+def test_apply_default_for_all_keys(cfg, shared, expected):
+    assert expected == _apply_default_for_all_keys(cfg, shared)
 
 ##__________________________________________________________________||

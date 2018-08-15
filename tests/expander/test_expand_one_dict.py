@@ -142,17 +142,21 @@ params = [
 
 ]
 
-def apply_shared(cfg, shared):
+def mock_apply_default_for_all_keys(cfg, shared):
     ret = cfg.copy()
     if 'abc_cfg' in ret:
         ret['abc_cfg'] = dict(shared_applied=ret['abc_cfg'])
     return ret
 
-@pytest.mark.parametrize('cfg, shared, expected', params)
-def test_expand_one_dict_apply(cfg, shared, expected):
-    shared['func_apply'] = apply_shared
-    actual = _expand_one_dict(cfg, shared)
+@pytest.fixture()
+def monkeypatch_apply_default_for_all_keys(monkeypatch):
+    import qtwirl._parser.expander as module
+    monkeypatch.setattr(module, '_apply_default_for_all_keys', mock_apply_default_for_all_keys)
+    return
 
+@pytest.mark.parametrize('cfg, shared, expected', params)
+def test_expand_one_dict_apply(cfg, shared, expected, monkeypatch_apply_default_for_all_keys):
+    actual = _expand_one_dict(cfg, shared)
     assert expected == actual
     assert actual is not cfg
 
