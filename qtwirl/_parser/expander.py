@@ -207,10 +207,10 @@ def _apply_default_for_all_keys(cfg, shared):
         if key in ignore:
             ret[key] = val
             continue
-        ret[key] = apply_default_for_one_key(key, val, shared)
+        ret[key] = _apply_default_for_one_key(key, val, shared)
     return ret
 
-def apply_default_for_one_key(key, cfg, shared):
+def _apply_default_for_one_key(key, cfg, shared):
     """apply default to a config for a key
 
     Parameters
