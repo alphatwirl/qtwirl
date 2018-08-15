@@ -178,14 +178,17 @@ def _expand_one_dict(cfg, shared):
 
 ##__________________________________________________________________||
 def _set_default(cfg, shared):
-    if set(cfg.keys()) <= set(shared['config_keys']):
-        shared['default_cfg_stack'].append(cfg)
-    elif shared['default_config_key'] is not None:
-        shared['default_cfg_stack'].append({shared['default_config_key']: cfg})
-    else:
-        # TODO: produce warning or error
-        pass
+    wrapped = _wrap_default_cfg(
+        cfg, shared['config_keys'], shared['default_config_key'])
+    shared['default_cfg_stack'].append(wrapped)
     return None
+
+def _wrap_default_cfg(cfg, config_keys, default_config_key):
+    if default_config_key is None:
+        return cfg
+    if set(cfg.keys()) <= set(config_keys):
+        return cfg
+    return {default_config_key: cfg}
 
 def _apply_default(cfg, shared):
     ignore = ('set_default', )
