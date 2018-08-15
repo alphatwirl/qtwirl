@@ -65,6 +65,13 @@ def test_default_cfg_dict(default_cfg_dict):
         assert [default_cfg_dict] == shared['default_cfg_stack']
 
 ##__________________________________________________________________||
+def test_func_apply_default():
+    expand_config = config_expander()
+    shared = expand_config.keywords['shared']
+    func_apply_default = shared['func_apply_default']
+    assert 'apply_default' == func_apply_default.__name__
+
+##__________________________________________________________________||
 def test_wrap():
     mock_set_default = mock.Mock()
     expand_func_map = {

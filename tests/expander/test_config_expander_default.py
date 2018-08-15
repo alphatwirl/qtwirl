@@ -2,13 +2,11 @@
 import pytest
 
 from qtwirl._parser.expander import config_expander
-from qtwirl._parser.expander import _apply_default_for_one_key
 
 ##__________________________________________________________________||
 def expand_abc_cfg(cfg, shared):
     key = 'abc_cfg'
-    cfg = _apply_default_for_one_key(key, cfg, shared)
-    ## cfg = shared['apply_default'](key, cfg)
+    cfg = shared['func_apply_default'](key, cfg)
     return {key: dict(expanded=cfg)}
 
 ##__________________________________________________________________||

@@ -65,15 +65,18 @@ def config_expander(expand_func_map=None, config_keys=None,
     else:
         expand_func_map['set_default'] = _set_default
 
+    #
     config_keys = set(config_keys)
     config_keys.update(expand_func_map.keys())
 
     if default_config_key is not None:
         config_keys.add(default_config_key)
 
+    #
     default_cfg_dict = _wrap_default_cfg(default_cfg_dict, config_keys, default_config_key)
     default_cfg_stack = [default_cfg_dict]
 
+    #
     shared = dict(
         default_cfg_stack=default_cfg_stack,
         expand_func_map=expand_func_map,
@@ -81,6 +84,14 @@ def config_expander(expand_func_map=None, config_keys=None,
         default_config_key=default_config_key,
     )
 
+    #
+    func_apply_default = functools.partial(
+        _apply_default_for_one_key, shared=shared)
+    functools.update_wrapper(func_apply_default, _apply_default_for_one_key)
+    func_apply_default.__name__ = 'apply_default'
+    shared['func_apply_default'] = func_apply_default
+
+    #
     ret = functools.partial(_expand_config, shared=shared)
     functools.update_wrapper(ret, _expand_config)
     ret.__name__ = 'expand_config'
