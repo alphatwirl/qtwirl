@@ -21,14 +21,12 @@ def mock_funtools(monkeypatch):
 params = [
     pytest.param(
         dict(),
-        dict(expand_func_map={}, config_keys=set([]), default_config_key=None),
+        set([]),
         id='empty'),
 
     pytest.param(
         dict(expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg}),
-        dict(
-            expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
-            config_keys=set(['abc_cfg']), default_config_key=None),
+        set(['abc_cfg']),
         id='empty-config-keys'),
 
     pytest.param(
@@ -36,9 +34,7 @@ params = [
             expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
             config_keys=['def_cfg']
         ),
-        dict(
-            expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
-            config_keys=set(['abc_cfg', 'def_cfg']), default_config_key=None),
+        set(['abc_cfg', 'def_cfg']),
         id='default-none'),
 
     pytest.param(
@@ -46,10 +42,7 @@ params = [
             expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
             config_keys=['def_cfg'], default_config_key='abc_cfg'
         ),
-        dict(
-            expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
-            config_keys=set(['abc_cfg', 'def_cfg']),
-            default_config_key='abc_cfg'),
+        set(['abc_cfg', 'def_cfg']),
         id='default-in-list'),
 
     pytest.param(
@@ -57,22 +50,20 @@ params = [
             expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
             config_keys=['def_cfg'], default_config_key='xyz_cfg'
         ),
-        dict(
-            expand_func_map={'abc_cfg': mock.sentinel.expand_abc_cfg},
-            config_keys=set(['abc_cfg', 'def_cfg', 'xyz_cfg']),
-            default_config_key='xyz_cfg'),
+        set(['abc_cfg', 'def_cfg', 'xyz_cfg']),
         id='default-not-in-list'),
 ]
 
 @pytest.mark.parametrize('kwargs, expected', params)
-def test_config_expander_args_to_expand_config_dict(
-        kwargs, expected, mock_funtools) :
-    """test if args to expand_config_dict() are correctly initialized
+def test_config_expander_config_keys(
+        kwargs, expected) :
+    """test if config_keys are correctly initialized
 
     """
-
-    config_expander(**kwargs)
-    args_to_expand_config_dict = mock_funtools.partial.call_args_list[0][1]
-    assert expected == args_to_expand_config_dict
+    expected.add('set_default')
+    expand_config = config_expander(**kwargs)
+    actual_shared = expand_config.keywords['shared']
+    actual = actual_shared['config_keys']
+    assert expected == actual
 
 ##__________________________________________________________________||
