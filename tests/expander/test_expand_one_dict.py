@@ -129,6 +129,17 @@ params = [
         id='no-default'
     ),
 
+    pytest.param(
+        dict(abc_cfg=dict(A=1), xyz_cfg=dict(A=1)),
+        dict(
+            config_keys=[ ],
+            default_config_key=None,
+            expand_func_map={ },
+        ),
+        dict(abc_cfg=dict(A=1), xyz_cfg=dict(A=1)), # not applied, or expanded
+        id='two-items'
+    ),
+
 ]
 
 def apply_shared(cfg, shared):

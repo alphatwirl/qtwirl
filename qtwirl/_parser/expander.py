@@ -160,30 +160,31 @@ def _expand_one_dict(cfg, shared):
 
     """
 
-    #
-    if len(cfg) == 1 and list(cfg.keys())[0] in shared['config_keys']:
-        pass
-    elif shared['default_config_key'] is not None:
-        cfg = {shared['default_config_key']: cfg}
-    else:
+    if shared['default_config_key'] is not None:
+        if not (len(cfg) == 1 and list(cfg.keys())[0] in shared['config_keys']):
+            cfg = {shared['default_config_key']: cfg}
+
+    if not len(cfg) == 1:
+        return cfg.copy()
+
+    key, val = list(cfg.items())[0]
+
+    if key not in shared['config_keys']:
         if 'func_apply' in shared:
             cfg = shared['func_apply'](cfg, shared)
         return cfg.copy()
 
-    #
-    key, val = list(cfg.items())[0]
-    if key in shared['expand_func_map']:
-        expand_func = shared['expand_func_map'][key]
-        try:
-            return expand_func(val, shared)
-        except TypeError:
-            return expand_func(val)
+    if key not in shared['expand_func_map']:
+        if 'func_apply' in shared:
+            cfg = shared['func_apply'](cfg, shared)
+        return cfg.copy()
 
-    #
-    if 'func_apply' in shared:
-        cfg = shared['func_apply'](cfg, shared)
+    expand_func = shared['expand_func_map'][key]
+    try:
+        return expand_func(val, shared)
+    except TypeError:
+        return expand_func(val)
 
-    return cfg.copy()
 
 ##__________________________________________________________________||
 def _set_default(cfg, shared):
