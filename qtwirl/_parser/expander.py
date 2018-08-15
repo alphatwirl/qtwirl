@@ -189,6 +189,29 @@ def _apply_default(cfg, shared):
         print val
         new_val.update(val)
         ret[key] = new_val
+def apply_default_for_one_key(key, cfg, shared):
+    """apply default to a config for a key
+
+    Parameters
+    ----------
+    key : str
+        A config key
+    cfg : dict
+        A config
+    shared : dict
+        A dict of shared objects.
+
+    Returns
+    -------
+    function
+        A config with default applied
+
+    """
+
+    ret = {}
+    for default_cfg in shared['default_cfg_stack']:
+        ret.update(default_cfg.get(key, {}))
+    ret.update(cfg)
     return ret
 
 ##__________________________________________________________________||
