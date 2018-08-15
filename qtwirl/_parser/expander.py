@@ -3,7 +3,7 @@
 
 A generic tool to expand config written in dict and a list of dict.
 
-This module is not specific to qtwirl and might become an independent
+This module is not specific to qtwirl and can become an independent
 package in the future.
 
 
