@@ -202,6 +202,8 @@ def _wrap_default_cfg(cfg, config_keys, default_config_key):
 
 ##__________________________________________________________________||
 def _apply_default(cfg, shared):
+    if 'default_cfg_stack' not in shared:
+        return cfg
     ignore = ('set_default', )
     ret = {}
     for key, val in cfg.items():

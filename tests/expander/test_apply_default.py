@@ -6,6 +6,7 @@ from qtwirl._parser.expander import _apply_default
 
 ##__________________________________________________________________||
 params = [
+
     pytest.param(
         dict(abc_cfg=dict(A=1), def_cfg=dict(D=2), set_default=dict(H=22)),
         dict(
@@ -17,6 +18,13 @@ params = [
         ),
         dict(abc_cfg=dict(A=1, B=2, C=10), def_cfg=dict(D=2, E=3), set_default=dict(H=22)),
         id='simple'
+    ),
+
+    pytest.param(
+        dict(abc_cfg=dict(A=1), def_cfg=dict(D=2), set_default=dict(H=22)),
+        dict(),
+        dict(abc_cfg=dict(A=1), def_cfg=dict(D=2), set_default=dict(H=22)),
+        id='no-default-cfg-stack'
     ),
 
 ]
