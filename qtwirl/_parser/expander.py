@@ -11,6 +11,7 @@ package in the future.
 
 import logging
 import functools
+import pprint
 
 from .._misc import is_dict
 
@@ -22,8 +23,8 @@ def config_expander(expand_func_map=None, config_keys=None,
     Parameters
     ----------
     expand_func_map : dict, optional
-        A map from a config key to a function that expands the config
-        for the key
+        A map from a config key to a function 1) that expands the
+        config for the key or 2) that updates the shared objects
 
     config_keys : list, optional
         A list of extra config keys that are not in keys of
@@ -39,11 +40,20 @@ def config_expander(expand_func_map=None, config_keys=None,
 
     """
 
+    #
     if expand_func_map is None:
         expand_func_map = {}
+    else:
+        expand_func_map = expand_func_map.copy() # so as not to modify
+                                                 # the original
 
-    # TODO: should check if 'set_default' already exists
-    expand_func_map['set_default'] = _set_default
+    #
+    if 'set_default' in expand_func_map:
+        logger = logging.getLogger(__name__)
+        msg = '"set_default" is in expand_func_map: expand_func_map={!r}'.format(expand_func_map)
+        logger.info(msg)
+    else:
+        expand_func_map['set_default'] = _set_default
 
     if config_keys is None:
         config_keys = []
@@ -63,6 +73,8 @@ def config_expander(expand_func_map=None, config_keys=None,
     )
 
     ret = functools.partial(_expand_config, shared=shared)
+    functools.update_wrapper(ret, _expand_config)
+    ret.__name__ = 'expand_config'
 
     return ret
 
@@ -76,8 +88,9 @@ def _expand_config(cfg, shared=None):
         Configuration
 
     shared : dict, optional
-        A dict of shared objects, to be given by ``config_expander()``
-        with ``functools.partial()``.
+
+        To be given by ``config_expander()`` with
+        ``functools.partial()``.
 
     Returns
     -------
