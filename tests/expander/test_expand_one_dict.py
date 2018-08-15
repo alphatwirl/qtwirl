@@ -97,53 +97,13 @@ def test_expand_one_dict(cfg, shared, expected):
 ##__________________________________________________________________||
 params = [
     pytest.param(
-        dict(abc_cfg=dict(A=1), xyz=2),
-        dict(
-            config_keys=['abc_cfg'],
-            default_config_key=None, # default None
-        ),
-        dict(abc_cfg=dict(A=1), xyz=2),
-        id='two-items'
-    ),
-
-    pytest.param(
-        dict(xyz_cfg=dict(A=1)), # 'xyz_cfg' not a config key
-        dict(
-            config_keys=['abc_cfg'],
-            default_config_key=None, # default None
-        ),
-        dict(xyz_cfg=dict(A=1)),
-        id='not-config-key'
-    ),
-]
-
-@pytest.mark.parametrize('cfg, shared, expected', params)
-def test_expand_one_dict_warning(cfg, shared, expected, caplog):
-    shared['expand_func_map'] = {
-        'abc_cfg': expand_abc_cfg,
-        }
-    with caplog.at_level(logging.WARNING):
-        actual = _expand_one_dict(cfg, shared)
-
-    assert expected == actual
-    assert actual is not cfg
-
-    assert len(caplog.records) == 1
-    assert caplog.records[0].levelname == 'WARNING'
-    assert 'expander' in caplog.records[0].name
-    assert 'a config key cannot be determined' in caplog.records[0].msg
-
-
-##__________________________________________________________________||
-params = [
-    pytest.param(
         dict(abc_cfg=dict(A=1)),
         dict(
             config_keys=['abc_cfg'],
             default_config_key='abc_cfg',
             expand_func_map={'abc_cfg': expand_abc_cfg},
         ),
-        dict(abc_cfg=dict(expanded=dict(A=1))),
+        dict(abc_cfg=dict(expanded=dict(A=1))), # not applied, only expanded
         id='with-expand-func'
     ),
 
@@ -154,9 +114,21 @@ params = [
             default_config_key='abc_cfg',
             expand_func_map={ },
         ),
-        dict(abc_cfg=dict(shared_applied=dict(A=1))),
+        dict(abc_cfg=dict(shared_applied=dict(A=1))),  # not expanded, only applied
         id='without-expand-func'
     ),
+
+    pytest.param(
+        dict(abc_cfg=dict(A=1)),
+        dict(
+            config_keys=[ ],
+            default_config_key=None,
+            expand_func_map={ },
+        ),
+        dict(abc_cfg=dict(shared_applied=dict(A=1))), # not applied, only expanded
+        id='no-default'
+    ),
+
 ]
 
 def apply_shared(cfg, shared):

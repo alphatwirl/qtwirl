@@ -166,9 +166,8 @@ def _expand_one_dict(cfg, shared):
     elif shared['default_config_key'] is not None:
         cfg = {shared['default_config_key']: cfg}
     else:
-        logger = logging.getLogger(__name__)
-        msg = 'a config key cannot be determined: cfg={}, shared={!r}'.format(cfg, shared)
-        logger.warning(msg)
+        if 'func_apply' in shared:
+            cfg = shared['func_apply'](cfg, shared)
         return cfg.copy()
 
     #
