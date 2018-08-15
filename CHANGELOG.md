@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.05.0...master))
+- improved internal structure
+    - defined expander.py as a generic module
 
 ## [0.05.0] - 2018-08-12
 
