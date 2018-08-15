@@ -16,6 +16,9 @@ import pprint
 from .._misc import is_dict
 
 ##__________________________________________________________________||
+__all__ = ['config_expander']
+
+##__________________________________________________________________||
 def config_expander(expand_func_map=None, config_keys=None,
                     default_config_key=None, default_cfg_dict=None):
     """return a function that expands a config
