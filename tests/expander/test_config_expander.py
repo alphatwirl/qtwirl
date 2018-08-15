@@ -55,6 +55,16 @@ def test_set_default_not_overridden(caplog):
     assert mock_set_default == shared['expand_func_map']['set_default']
 
 ##__________________________________________________________________||
+@pytest.mark.parametrize('default_cfg_dict', [None, dict(A=1)])
+def test_default_cfg_dict(default_cfg_dict):
+    expand_config = config_expander(default_cfg_dict=default_cfg_dict)
+    shared = expand_config.keywords['shared']
+    if default_cfg_dict is None:
+        assert [{}] == shared['default_cfg_stack']
+    else:
+        assert [default_cfg_dict] == shared['default_cfg_stack']
+
+##__________________________________________________________________||
 def test_wrap():
     mock_set_default = mock.Mock()
     expand_func_map = {

@@ -17,7 +17,7 @@ from .._misc import is_dict
 
 ##__________________________________________________________________||
 def config_expander(expand_func_map=None, config_keys=None,
-                    default_config_key=None):
+                    default_config_key=None, default_cfg_dict=None):
     """return a function that expands a config
 
     Parameters
@@ -33,6 +33,9 @@ def config_expander(expand_func_map=None, config_keys=None,
     default_config_key: str, optional
         A default key
 
+    default_cfg_dict: dict, optional
+        A dict of default config
+
     Returns
     -------
     function
@@ -43,8 +46,15 @@ def config_expander(expand_func_map=None, config_keys=None,
     #
     if expand_func_map is None:
         expand_func_map = {}
-    else:
-        expand_func_map = expand_func_map.copy() # so as not to modify
+
+    if config_keys is None:
+        config_keys = []
+
+    if default_cfg_dict is None:
+        default_cfg_dict = {}
+
+    #
+    expand_func_map = expand_func_map.copy() # so as not to modify
                                                  # the original
 
     #
@@ -55,17 +65,17 @@ def config_expander(expand_func_map=None, config_keys=None,
     else:
         expand_func_map['set_default'] = _set_default
 
-    if config_keys is None:
-        config_keys = []
-
-    config_keys =set(config_keys)
+    config_keys = set(config_keys)
     config_keys.update(expand_func_map.keys())
 
     if default_config_key is not None:
         config_keys.add(default_config_key)
 
+    default_cfg_dict = _wrap_default_cfg(default_cfg_dict, config_keys, default_config_key)
+    default_cfg_stack = [default_cfg_dict]
+
     shared = dict(
-        default_cfg_stack=[ ],
+        default_cfg_stack=default_cfg_stack,
         expand_func_map=expand_func_map,
         config_keys=config_keys,
         default_config_key=default_config_key,
