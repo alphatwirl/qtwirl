@@ -76,7 +76,7 @@ def test_wrap():
     mock_set_default = mock.Mock()
     expand_func_map = {
         'abc_cfg': expand_abc_cfg,
-        'def_cfg': expand_abc_cfg,
+        'def_cfg': expand_def_cfg,
     }
     config_keys = ['xyz_cfg']
     default_config_key = 'abc_cfg'
