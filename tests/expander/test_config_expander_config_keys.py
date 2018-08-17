@@ -11,13 +11,6 @@ except ImportError:
 from qtwirl._parser.expander import config_expander
 
 ##__________________________________________________________________||
-@pytest.fixture()
-def mock_funtools(monkeypatch):
-    ret = mock.Mock()
-    module = sys.modules['qtwirl._parser.expander']
-    monkeypatch.setattr(module, 'functools', ret)
-    return ret
-
 params = [
     pytest.param(
         dict(),
