@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.06.0...master))
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.07.0...master))
+
+## [0.07.0] - 2019-02-10
+
+**PyPI**: https://pypi.org/project/qtwirl/0.6.0/
+
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.06.0...v0.07.0))
+- changed the default `quiet` to `False`
 
 ## [0.06.0] - 2018-08-15
 
