@@ -29,6 +29,7 @@ install:
   - conda create -q -n testenv python=${TRAVIS_PYTHON_VERSION} $([ "$ROOT" != "None" ] && echo "root=${ROOT}") $([ "$PANDAS" != "None" ] && echo "pandas=${PANDAS}") sphinx numpy
   - export CONDA_ENV_PATH=$HOME/miniconda/envs/testenv
   - source activate testenv
+  - pip install jupyter
   - pip install git+git://github.com/alphatwirl/alphatwirl.git@"$ALPHATWIRL"
   - pip install git+git://github.com/TaiSakuma/scribblers.git@cd7bb51a429bda
   - pip install pytest
