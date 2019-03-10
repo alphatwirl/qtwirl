@@ -1,11 +1,20 @@
 from setuptools import setup, find_packages
 import versioneer
 
+import os
+import io
+
+here = os.path.abspath(os.path.dirname(__file__))
+with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
     name='qtwirl',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description='qtwirl (quick-twirl), a one-function interface to alphatwirl',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Tai Sakuma',
     author_email='tai.sakuma@gmail.com',
     url='https://github.com/alphatwirl/qtwirl',
@@ -17,5 +26,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     packages=find_packages(exclude=['docs', 'tests']),
-    install_requires=['alphatwirl>=0.20.0'],
+    install_requires=[
+        'alphatwirl>=0.23.2'
+    ],
 )
