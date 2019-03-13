@@ -2,11 +2,19 @@
 
 ## [Unreleased]
 
-#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.07.0...master))
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.0...master))
+- updated README.md
+
+## [0.9.0] - 2019-03-10
+
+**PyPI**: https://pypi.org/project/qtwirl/0.9.0/
+
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.07.0...v0.9.0))
+- update `.travis.yml`, `MANIFEST.in`, `setup.py`
 
 ## [0.07.0] - 2019-02-10
 
-**PyPI**: https://pypi.org/project/qtwirl/0.6.0/
+**PyPI**: https://pypi.org/project/qtwirl/0.7.0/
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.06.0...v0.07.0))
 - changed the default `quiet` to `False`
