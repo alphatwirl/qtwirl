@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.0...master))
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.1...master))
+
+## [0.9.1] - 2019-05-11
+
+**PyPI**: https://pypi.org/project/qtwirl/0.9.1/
+
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.0...v0.9.1))
+- updated `.travis.yml`, `setup.py`
 - updated README.md
 
 ## [0.9.0] - 2019-03-10
