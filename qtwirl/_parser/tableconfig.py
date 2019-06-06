@@ -7,8 +7,6 @@ from .expander import _apply_default_for_one_key
 
 ##__________________________________________________________________||
 def expand_table_cfg(cfg, shared):
-    from pprint import pprint
-    pprint(shared)
     cfg = _apply_default_for_one_key('table_cfg', cfg, shared)
     cfg = complete_table_cfg(cfg)
     cfg = dict(table_cfg=cfg)
