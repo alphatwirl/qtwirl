@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.1...master))
+- started applying default to table_cfg
 
 ## [0.9.1] - 2019-05-11
 
@@ -17,7 +18,7 @@
 **PyPI**: https://pypi.org/project/qtwirl/0.9.0/
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.07.0...v0.9.0))
-- update `.travis.yml`, `MANIFEST.in`, `setup.py`
+- updated `.travis.yml`, `MANIFEST.in`, `setup.py`
 
 ## [0.07.0] - 2019-02-10
 
@@ -31,8 +32,7 @@
 **PyPI**: https://pypi.org/project/qtwirl/0.6.0/
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.05.0...v0.06.0))
-- defined `expander.py` as a generic module, which can become an
-independent package in the future.
+- defined `expander.py` as a generic module, which can become an independent package in the future.
 - improved internal structure
 
 ## [0.05.0] - 2018-08-12
