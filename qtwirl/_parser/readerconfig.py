@@ -1,13 +1,14 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 import functools
 
-from .expander import config_expander
+from .expander import config_expander, _apply_default_for_one_key
 
 from .tableconfig import complete_table_cfg
 from .selectionconfig import complete_selection_cfg
 
 ##__________________________________________________________________||
-def expand_table_cfg(cfg):
+def expand_table_cfg(cfg, shared):
+    cfg = _apply_default_for_one_key('table_cfg', cfg, shared)
     return dict(table_cfg=complete_table_cfg(cfg))
 
 def expand_selection_cfg(cfg):

@@ -11,6 +11,14 @@ import alphatwirl
 from qtwirl._parser.readerconfig import expand_reader_config
 
 ##__________________________________________________________________||
+def mock_apply_default_for_one_key(key, cfg, shared):
+    return dict(default_applied=cfg)
+
+@pytest.fixture(autouse=True)
+def monkeypatch_apply_default_for_one_key(monkeypatch):
+    from qtwirl._parser import readerconfig
+    monkeypatch.setattr(readerconfig, '_apply_default_for_one_key', mock_apply_default_for_one_key)
+
 def mock_complete_table_cfg(cfg):
     return dict(mock_complete_table_cfg=cfg)
 
@@ -36,14 +44,13 @@ tblcfg_dict1 = dict(
     key_index='*',
 )
 
-
 tblcfg_dict2 = dict(
     key_name='met',
     key_binning=RoundLog(0.1, 100),
 )
 
-tblcfg_dict1_completed = dict(mock_complete_table_cfg=tblcfg_dict1)
-tblcfg_dict2_completed = dict(mock_complete_table_cfg=tblcfg_dict2)
+tblcfg_dict1_completed = dict(mock_complete_table_cfg=dict(default_applied=tblcfg_dict1))
+tblcfg_dict2_completed = dict(mock_complete_table_cfg=dict(default_applied=tblcfg_dict2))
 
 selection_cfg_dict = dict(All=('ev: ev.njets[0] > 4', ))
 selection_cfg_str = 'ev: ev.njets[0] > 4'
@@ -56,7 +63,7 @@ scribbler1 = mock.Mock()
 ##__________________________________________________________________||
 params = [
     pytest.param(
-        dict(), dict(table_cfg=dict(mock_complete_table_cfg=dict())), id='empty-dict'
+        dict(), dict(table_cfg=dict(mock_complete_table_cfg=dict(default_applied=dict()))), id='empty-dict'
     ),
     pytest.param(
         [ ], [ ], id='empty-list'
