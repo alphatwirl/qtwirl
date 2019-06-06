@@ -2,9 +2,12 @@
 import os
 
 from .._misc import is_dict
+from .expander import _apply_default_for_one_key
 
 ##__________________________________________________________________||
 def expand_selection_cfg(cfg, shared):
+    cfg = _wrap_cfg(cfg)
+    cfg = _apply_default_for_one_key('selection_cfg', cfg, shared)
     cfg = complete_selection_cfg(cfg)
     cfg = dict(selection_cfg=cfg)
     return cfg
@@ -31,8 +34,6 @@ def complete_selection_cfg(cfg):
     )
 
     default_file_name = 'tbl_selection_count.txt'
-
-    cfg = _wrap_cfg(cfg)
 
     ret = default_cfg
     ret.update(cfg)

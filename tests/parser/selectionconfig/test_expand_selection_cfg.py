@@ -18,7 +18,8 @@ params = [
             dict(selection_cfg=dict(
                 condition='ev: ev.njets[0] > 4',
                 count=False,
-                store_file=False
+                store_file=True,
+                file_path='tbl_selection_count.txt'
             ))
         ),
 ]
@@ -26,6 +27,8 @@ params = [
 @pytest.mark.parametrize('cfg, shared, expected', params)
 def test_expand(cfg, shared, expected):
     actual = expand_selection_cfg(cfg, shared)
+    print(expected)
+    print(actual)
     assert expected == actual
     assert actual is not cfg
 

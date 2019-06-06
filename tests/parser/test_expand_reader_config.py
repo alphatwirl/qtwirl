@@ -8,7 +8,7 @@ except ImportError:
 
 from qtwirl._parser.readerconfig import expand_reader_config
 from qtwirl._parser.tableconfig import complete_table_cfg
-from qtwirl._parser.selectionconfig import complete_selection_cfg
+from qtwirl._parser.selectionconfig import complete_selection_cfg, _wrap_cfg
 
 ##__________________________________________________________________||
 from alphatwirl.summary import WeightCalculatorOne
@@ -37,8 +37,8 @@ tblcfg_dict2_completed = dict(complete_table_cfg(tblcfg_dict2))
 selection_cfg_dict = dict(All=('ev: ev.njets[0] > 4', ))
 selection_cfg_str = 'ev: ev.njets[0] > 4'
 
-selection_cfg_dict_completed = dict(complete_selection_cfg(selection_cfg_dict))
-selection_cfg_str_completed = dict(complete_selection_cfg(selection_cfg_str))
+selection_cfg_dict_completed = dict(complete_selection_cfg(_wrap_cfg(selection_cfg_dict)))
+selection_cfg_str_completed = dict(complete_selection_cfg(_wrap_cfg(selection_cfg_str)))
 
 scribbler1 = mock.Mock()
 
