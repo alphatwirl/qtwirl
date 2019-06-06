@@ -7,24 +7,8 @@ except ImportError:
     import mock
 
 from qtwirl._parser.readerconfig import expand_reader_config
-from qtwirl._parser.tableconfig import expand_table_cfg, complete_table_cfg
-
-##__________________________________________________________________||
-def mock_expand_table_cfg(cfg):
-    return dict(expanded_table_cfg=cfg)
-
-@pytest.fixture(autouse=True)
-def monkeypatch_expand_table_cfg(monkeypatch):
-    from qtwirl._parser import readerconfig
-    monkeypatch.setattr(readerconfig, 'expand_table_cfg', mock_expand_table_cfg)
-
-def mock_complete_selection_cfg(cfg):
-    return dict(mock_complete_selection_cfg=cfg)
-
-@pytest.fixture(autouse=True)
-def monkeypatch_complete_selection_cfg(monkeypatch):
-    from qtwirl._parser import readerconfig
-    monkeypatch.setattr(readerconfig, 'complete_selection_cfg', mock_complete_selection_cfg)
+from qtwirl._parser.tableconfig import complete_table_cfg
+from qtwirl._parser.selectionconfig import complete_selection_cfg
 
 ##__________________________________________________________________||
 from alphatwirl.summary import WeightCalculatorOne
@@ -53,8 +37,8 @@ tblcfg_dict2_completed = dict(complete_table_cfg(tblcfg_dict2))
 selection_cfg_dict = dict(All=('ev: ev.njets[0] > 4', ))
 selection_cfg_str = 'ev: ev.njets[0] > 4'
 
-selection_cfg_dict_completed = dict(mock_complete_selection_cfg=selection_cfg_dict)
-selection_cfg_str_completed = dict(mock_complete_selection_cfg=selection_cfg_str)
+selection_cfg_dict_completed = dict(complete_selection_cfg(selection_cfg_dict))
+selection_cfg_str_completed = dict(complete_selection_cfg(selection_cfg_str))
 
 scribbler1 = mock.Mock()
 

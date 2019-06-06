@@ -1,12 +1,9 @@
 # Tai Sakuma <tai.sakuma@gmail.com>
 from .expander import config_expander
 from .tableconfig import expand_table_cfg
-from .selectionconfig import complete_selection_cfg
+from .selectionconfig import expand_selection_cfg
 
 ##__________________________________________________________________||
-def expand_selection_cfg(cfg):
-    return dict(selection_cfg=complete_selection_cfg(cfg))
-
 def expand_reader(reader):
     if isinstance(reader, list) or isinstance(reader, tuple):
         return [dict(reader=r) for r in reader if r is not None]

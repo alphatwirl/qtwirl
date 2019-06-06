@@ -4,6 +4,12 @@ import os
 from .._misc import is_dict
 
 ##__________________________________________________________________||
+def expand_selection_cfg(cfg, shared):
+    cfg = complete_selection_cfg(cfg)
+    cfg = dict(selection_cfg=cfg)
+    return cfg
+
+##__________________________________________________________________||
 def complete_selection_cfg(cfg):
     """complete a selection config.
 
