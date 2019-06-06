@@ -88,38 +88,38 @@ def test_one_selection_four_tables(count, store_file, file_dir):
     RoundLog = alphatwirl.binning.RoundLog
     from scribblers.essentials import FuncOnNumpyArrays
     reader_cfg = [
+       dict(set_default=dict(
+          table_cfg=dict(
+             store_file=store_file,
+             file_dir=file_dir
+          ),
+          selection_cfg=dict(
+             store_file=store_file,
+             file_dir=file_dir
+          )
+       )),
         dict(selection_cfg=dict(
             condition=dict(All=('ev: ev.njets[0] > 4', )),
-            count=count,
-            store_file=store_file,
-            file_dir=file_dir
+            count=count
         )),
         dict(key_name='jet_pt',
              key_binning=RoundLog(0.1, 100),
              key_index='*',
-             key_out_name='jet_pt',
-             store_file=store_file,
-             file_dir=file_dir
+             key_out_name='jet_pt'
         ),
         dict(key_name='met',
-             key_binning=RoundLog(0.1, 100),
-             store_file=store_file,
-             file_dir=file_dir
+             key_binning=RoundLog(0.1, 100)
         ),
         dict(
             key_name=('njets', 'met'),
-            key_binning=(None, RoundLog(0.2, 100, min=50, underflow_bin=0)),
-             store_file=store_file,
-             file_dir=file_dir
+            key_binning=(None, RoundLog(0.2, 100, min=50, underflow_bin=0))
         ),
         dict(reader=FuncOnNumpyArrays(
             src_arrays=['jet_pt'],
             out_name='ht',
             func=np.sum)),
         dict(key_name='ht',
-             key_binning=RoundLog(0.1, 100),
-             store_file=store_file,
-             file_dir=file_dir
+             key_binning=RoundLog(0.1, 100)
         ),
     ]
 
