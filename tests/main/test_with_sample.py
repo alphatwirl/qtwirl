@@ -61,7 +61,7 @@ def test_one_table(store_file, file_dir):
     ##
     tbl_expected_dir = os.path.join(TESTDATADIR, 'tbl')
     tbl_expected_path = os.path.join(tbl_expected_dir, '00', 'tbl_n.jet_pt-w.txt')
-    tbl_expected = pd.read_table(tbl_expected_path, delim_whitespace=True)
+    tbl_expected = pd.read_csv(tbl_expected_path, delim_whitespace=True)
 
     ##
     assert_frame_equal(tbl_expected, results, check_names=True)
@@ -71,7 +71,7 @@ def test_one_table(store_file, file_dir):
         tbl_stored_file_name = 'tbl_n.jet_pt-w.txt'
         assert [tbl_stored_file_name] == os.listdir(file_dir)
         tbl_stored_path = os.path.join(file_dir, tbl_stored_file_name)
-        tbl_stored = pd.read_table(tbl_stored_path, delim_whitespace=True)
+        tbl_stored = pd.read_csv(tbl_stored_path, delim_whitespace=True)
         assert_frame_equal(tbl_expected, tbl_stored, check_names=True)
     else:
         assert [ ] == os.listdir(file_dir)
@@ -149,7 +149,7 @@ def test_one_selection_four_tables(count, store_file, file_dir):
     ##
     tbl_expected_dir = os.path.join(TESTDATADIR, 'tbl')
     tbl_expected_paths = [os.path.join(tbl_expected_dir, '01', n) for n in tbl_expected_file_names]
-    tbls_expected = [pd.read_table(p, delim_whitespace=True) for p in tbl_expected_paths]
+    tbls_expected = [pd.read_csv(p, delim_whitespace=True) for p in tbl_expected_paths]
 
     ##
     for expected, actual in zip(tbls_expected, results):
@@ -161,7 +161,7 @@ def test_one_selection_four_tables(count, store_file, file_dir):
         assert set(tbl_expected_file_names) == set(os.listdir(file_dir))
         for expected, file_name in zip(tbls_expected, tbl_expected_file_names):
             tbl_stored_path = os.path.join(file_dir, file_name)
-            tbl_stored = pd.read_table(tbl_stored_path, delim_whitespace=True)
+            tbl_stored = pd.read_csv(tbl_stored_path, delim_whitespace=True)
             assert_frame_equal(expected, tbl_stored, check_names=True, check_less_precise=True)
 
     else:
