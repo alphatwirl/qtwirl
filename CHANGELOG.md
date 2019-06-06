@@ -3,7 +3,9 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.1...master))
-- started applying default to table_cfg
+- started applying default to `table_cfg` and `selection_cfg`
+- cleaned code
+- updated tests
 
 ## [0.9.1] - 2019-05-11
 
