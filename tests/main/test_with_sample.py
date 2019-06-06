@@ -29,8 +29,8 @@ SAMPLE_ROOT_FILE_PATHS = [os.path.join(SAMPLE_ROOT_FILE_DIR, n) for n in SAMPLE_
 ##__________________________________________________________________||
 @pytest.fixture()
 def file_dir(tmpdir_factory):
-   ret = str(tmpdir_factory.mktemp(''))
-   return ret
+    ret = str(tmpdir_factory.mktemp(''))
+    return ret
 
 @pytest.mark.parametrize('store_file', [False, True])
 def test_one_table(store_file, file_dir):
@@ -88,16 +88,16 @@ def test_one_selection_four_tables(count, store_file, file_dir):
     RoundLog = alphatwirl.binning.RoundLog
     from scribblers.essentials import FuncOnNumpyArrays
     reader_cfg = [
-       dict(set_default=dict(
-          table_cfg=dict(
-             store_file=store_file,
-             file_dir=file_dir
-          ),
-          selection_cfg=dict(
-             store_file=store_file,
-             file_dir=file_dir
-          )
-       )),
+        dict(set_default=dict(
+            table_cfg=dict(
+                store_file=store_file,
+                file_dir=file_dir
+            ),
+            selection_cfg=dict(
+                store_file=store_file,
+                file_dir=file_dir
+            )
+        )),
         dict(selection_cfg=dict(
             condition=dict(All=('ev: ev.njets[0] > 4', )),
             count=count
