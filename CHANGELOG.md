@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 #### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.1...master))
+- fixed a bug where successive calls of `_expand_config()` shared `shared`
 - started applying default to `table_cfg` and `selection_cfg`
 - cleaned code
 - updated tests
