@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.1...master))
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.2...master))
+
+## [0.9.2] - 2019-06-07
+
+**PyPI**: https://pypi.org/project/qtwirl/0.9.2/
+
+#### Changs from the previous release: ([diff](https://github.com/alphatwirl/qtwirl/compare/v0.9.1...v0.9.2))
 - fixed a bug where successive calls of `_expand_config()` shared `shared`
 - started applying default to `table_cfg` and `selection_cfg`
 - cleaned code
