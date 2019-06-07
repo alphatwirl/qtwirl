@@ -16,7 +16,7 @@ def test_config_expander():
     }
     config_keys = ['def_cfg']
     default_config_key = 'abc_cfg'
-    expand_config=config_expander(
+    expand_config = config_expander(
         expand_func_map=expand_func_map,
         config_keys=config_keys,
         default_config_key=default_config_key
