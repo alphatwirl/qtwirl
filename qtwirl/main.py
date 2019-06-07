@@ -29,6 +29,8 @@ def qtwirl(data, reader_cfg,
     ----------
     data : str or list of str
         Input file path(s)
+    tree_name : str, optional
+        The name of tree
     reader_cfg : dict or list of dict
         Reader configuration
     parallel_mode : str, optional
@@ -43,10 +45,19 @@ def qtwirl(data, reader_cfg,
         The names of modules to be sent to worker nodes when
         parallel_mode is "htcondor"
     max_events : int, optional
+        The maximum number of events to be processed. No limit if `-1`
+        (default).
     max_files : int, optional
+        The maximum number of files to be processed. No limit if `-1`
+        (default).
     max_events_per_process : int, optional
+        The maximum number of events to be processed in each chunk. No
+        limit if `-1` (default).
     max_files_per_process : int, optional
+        The maximum number of files to be processed in each chunk. No
+        limit if `-1` (default).
     skip_error_files, bool, default True
+        Skip error files if true
 
     Returns
     -------
