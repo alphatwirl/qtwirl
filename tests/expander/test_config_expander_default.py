@@ -64,7 +64,32 @@ params = [
 ]
 
 @pytest.mark.parametrize('cfg, expected', params)
-def test_config_expander(cfg, expected, expand_config):
+def test_default(cfg, expected, expand_config):
+    assert expected == expand_config(cfg)
+
+##__________________________________________________________________||
+def test_default_no_memory(expand_config):
+
+    cfg = [
+        dict(set_default=dict(C=4)),
+        dict(A=1)
+    ]
+
+    expected = [
+        dict(abc_cfg=dict(expanded=dict(A=1, C=4)))
+    ]
+
+    assert expected == expand_config(cfg)
+
+    cfg = [
+        dict(A=1)
+    ]
+
+    expected = [
+        dict(abc_cfg=dict(expanded=dict(A=1)))
+        # must not be dict(abc_cfg=dict(expanded=dict(A=1, C=4)))
+    ]
+
     assert expected == expand_config(cfg)
 
 ##__________________________________________________________________||

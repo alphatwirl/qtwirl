@@ -11,7 +11,7 @@ package in the future.
 
 import logging
 import functools
-import pprint
+import copy
 
 from .._misc import is_dict
 
@@ -127,6 +127,8 @@ def _expand_config(cfg, shared=None):
 
     if shared is None:
         shared = {}
+
+    shared = copy.deepcopy(shared) # so successive calls don't share `shared`
 
     if is_dict(cfg):
         cfg = _expand_one_dict(cfg, shared)
