@@ -11,7 +11,8 @@ from ._builder.func import build_reader, create_file_loaders, let_reader_read
 __all__ = ['qtwirl']
 
 ##__________________________________________________________________||
-def qtwirl(data, reader_cfg,
+def qtwirl(data=None,
+           reader_cfg=None,
            tree_name=None,
            parallel_mode='multiprocessing',
            dispatcher_options=None,
@@ -19,7 +20,8 @@ def qtwirl(data, reader_cfg,
            user_modules=None,
            max_events=-1, max_files=-1,
            max_events_per_process=-1, max_files_per_process=1,
-           skip_error_files=True):
+           skip_error_files=True,
+           file_loaders=None):
     """qtwirl (quick-twirl), one-function interface to alphatwirl
 
     Summarize event data in ``file`` in the way specified by
@@ -27,12 +29,12 @@ def qtwirl(data, reader_cfg,
 
     Parameters
     ----------
-    data : str or list of str
+    data : str or list of str, optional
         Input file path(s)
-    tree_name : str, optional
-        The name of tree
     reader_cfg : dict or list of dict
         Reader configuration
+    tree_name : str, optional
+        The name of tree
     parallel_mode : str, optional
         "multiprocessing" (default) or "htcondor"
     dispatcher_options : dict, optional
@@ -58,6 +60,11 @@ def qtwirl(data, reader_cfg,
         limit if `-1` (default).
     skip_error_files, bool, default True
         Skip error files if true
+    file_loaders : list of func, optional
+        List of file_loaders. If given, the following options will be
+        ignored:`data`, `tree_name`, `max_events`,
+        `max_events_per_process`, `max_files`,
+        `max_files_per_process`, `skip_error_files`
 
     Returns
     -------
@@ -67,16 +74,12 @@ def qtwirl(data, reader_cfg,
     """
 
     ##
-    files = parse_data(data)
-
-    ##
     reader_cfg = expand_reader_config(reader_cfg)
     reader = build_reader(reader_cfg)
 
     ##
     if dispatcher_options is None:
-        dispatcher_options=dict()
-
+        dispatcher_options = dict()
 
     ##
     default_user_modules = ('qtwirl', 'alphatwirl')
@@ -91,14 +94,19 @@ def qtwirl(data, reader_cfg,
         processes=process,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
-    file_loaders = create_file_loaders(
-        files, tree_name=tree_name,
-        max_events=max_events,
-        max_events_per_run=max_events_per_process,
-        max_files=max_files,
-        max_files_per_run=max_files_per_process,
-        check_files=True,
-        skip_error_files=skip_error_files)
+
+
+    ##
+    if file_loaders is None:
+        files = parse_data(data)
+        file_loaders = create_file_loaders(
+            files, tree_name=tree_name,
+            max_events=max_events,
+            max_events_per_run=max_events_per_process,
+            max_files=max_files,
+            max_files_per_run=max_files_per_process,
+            check_files=True,
+            skip_error_files=skip_error_files)
 
     parallel.begin()
     ret = let_reader_read(file_loaders=file_loaders, reader=reader, parallel=parallel)
