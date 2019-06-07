@@ -191,11 +191,11 @@ def create_file_loaders(
         return ret
 
 ##__________________________________________________________________||
-def let_reader_read(files, reader, parallel, func_create_file_loaders):
+def let_reader_read(file_loaders, reader, parallel):
+
     eventLoopRunner = alphatwirl.loop.MPEventLoopRunner(parallel.communicationChannel)
     eventLoopRunner.begin()
 
-    file_loaders = func_create_file_loaders(files)
     njobs = len(file_loaders)
     eventLoops = [ ]
     for i, file_loader in enumerate(file_loaders):

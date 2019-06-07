@@ -91,18 +91,17 @@ def qtwirl(data, reader_cfg,
         processes=process,
         user_modules=user_modules,
         dispatcher_options=dispatcher_options)
-    func_create_file_loaders = functools.partial(
-        create_file_loaders,
-        tree_name=tree_name,
-        max_events=max_events, max_events_per_run=max_events_per_process,
-        max_files=max_files, max_files_per_run=max_files_per_process,
-        check_files=True, skip_error_files=skip_error_files)
-    read_files = functools.partial(
-        let_reader_read, reader=reader, parallel=parallel,
-        func_create_file_loaders=func_create_file_loaders)
+    file_loaders = create_file_loaders(
+        files, tree_name=tree_name,
+        max_events=max_events,
+        max_events_per_run=max_events_per_process,
+        max_files=max_files,
+        max_files_per_run=max_files_per_process,
+        check_files=True,
+        skip_error_files=skip_error_files)
 
     parallel.begin()
-    ret = read_files(files=files)
+    ret = let_reader_read(file_loaders=file_loaders, reader=reader, parallel=parallel)
     parallel.end()
 
     if isinstance(reader, alphatwirl.loop.ReaderComposite):
